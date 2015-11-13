@@ -15,6 +15,12 @@ export default class MemberListTeamItem extends React.Component {
         this.handleMakeNotActive = this.handleMakeNotActive.bind(this);
         this.handleMakeAdmin = this.handleMakeAdmin.bind(this);
 
+        this.handleMakeNurse = this.handleMakeNurse.bind(this);
+        this.handleMakeDoctor = this.handleMakeDoctor.bind(this);
+        this.handleMakeRadiologist = this.handleMakeRadiologist.bind(this);
+        this.handleMakeTechnician = this.handleMakeTechnician.bind(this);
+        this.handleMakeAdministrator = this.handleMakeAdministrator.bind(this);
+
         this.state = {};
     }
     handleMakeMember() {
@@ -67,6 +73,92 @@ export default class MemberListTeamItem extends React.Component {
             }
         );
     }
+    handleMakeAdministrator(e) {
+                e.preventDefault();
+                const data = {
+                    user_id: this.props.user.id,
+                    new_roles: 'administrator'
+                };
+
+                Client.updateRoles(data,
+                    () => {
+                        this.props.refreshProfiles();
+                    },
+                    (err) => {
+                        this.setState({serverError: err.message});
+                    }
+                );
+    }
+
+    handleMakeTechnician(e) {
+                e.preventDefault();
+                const data = {
+                    user_id: this.props.user.id,
+                    new_roles: 'technician'
+                };
+
+                Client.updateRoles(data,
+                    () => {
+                        this.props.refreshProfiles();
+                    },
+                    (err) => {
+                        this.setState({serverError: err.message});
+                    }
+                );
+    }
+
+    handleMakeRadiologist(e) {
+                e.preventDefault();
+                const data = {
+                    user_id: this.props.user.id,
+                    new_roles: 'radiologist'
+                };
+
+                Client.updateRoles(data,
+                    () => {
+                        this.props.refreshProfiles();
+                    },
+                    (err) => {
+                        this.setState({serverError: err.message});
+                    }
+                );
+    }
+
+
+    handleMakeDoctor(e) {
+                e.preventDefault();
+                const data = {
+                    user_id: this.props.user.id,
+                    new_roles: 'doctor'
+                };
+
+                Client.updateRoles(data,
+                    () => {
+                        this.props.refreshProfiles();
+                    },
+                    (err) => {
+                        this.setState({serverError: err.message});
+                    }
+                );
+    }
+
+    handleMakeNurse(e) {
+            e.preventDefault();
+            const data = {
+                user_id: this.props.user.id,
+                new_roles: 'nurse'
+            };
+
+            Client.updateRoles(data,
+                () => {
+                    this.props.refreshProfiles();
+                },
+                (err) => {
+                    this.setState({serverError: err.message});
+                }
+            );
+    }
+
     render() {
         let serverError = null;
         if (this.state.serverError) {
@@ -135,6 +227,70 @@ export default class MemberListTeamItem extends React.Component {
             );
         }
 
+ {
+             );
+         }
+
+        let makeNurse = (
+                <li role='presentation'>
+                    <a
+                        role='menuitem'
+                        href='#'
+                        onClick={this.handleMakeAdmin}
+                    >
+                        {'Make Nurse'}
+                    </a>
+                </li>
+        );
+
+        let makeDoctor= (
+                <li role='presentation'>
+                    <a
+                        role='menuitem'
+                        href='#'
+                        onClick={this.handleMakeAdmin}
+                    >
+                        {'Make Doctor'}
+                    </a>
+                </li>
+        );
+
+        let makeTechnician = (
+                <li role='presentation'>
+                    <a
+                        role='menuitem'
+                        href='#'
+                        onClick={this.handleMakeAdmin}
+                    >
+                        {'Make Technician'}
+                    </a>
+                </li>
+        );
+
+        let makeRadiologist = (
+                <li role='presentation'>
+                    <a
+                        role='menuitem'
+                        href='#'
+                        onClick={this.handleMakeAdmin}
+                    >
+                        {'Make Radiologist'}
+                    </a>
+                </li>
+        );
+
+        let makeAdministrator = (
+                <li role='presentation'>
+                    <a
+                        role='menuitem'
+                        href='#'
+                        onClick={this.handleMakeAdmin}
+                    >
+                        {'Make Administrator'}
+                    </a>
+                </li>
+        );
+
         let makeActive = null;
         if (showMakeActive) {
             makeActive = (
@@ -193,6 +349,11 @@ export default class MemberListTeamItem extends React.Component {
                             role='menu'
                             aria-labelledby='channel_header_dropdown'
                         >
+                            {makeNurse}
+                            {makeDoctor}
+                            {makeRadiologist}
+                            {makeTechnician}
+                            {makeAdministrator}
                             {makeAdmin}
                             {makeMember}
                             {makeActive}

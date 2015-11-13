@@ -16,6 +16,13 @@ import (
 const (
 	ROLE_TEAM_ADMIN      = "admin"
 	ROLE_SYSTEM_ADMIN    = "system_admin"
+
+	ROLE_NURSE = "nurse"
+	ROLE_DOCTOR = "doctor"
+	ROLE_TECHNICIAN = "technician"
+	ROLE_ADMINISTRATOR = "administrator"
+	ROLE_RADIOLOGIST = "radiologist"
+
 	USER_AWAY_TIMEOUT    = 5 * 60 * 1000 // 5 minutes
 	USER_OFFLINE_TIMEOUT = 1 * 60 * 1000 // 1 minute
 	USER_OFFLINE         = "offline"
@@ -310,6 +317,26 @@ func isValidRole(role string) bool {
 	}
 
 	if role == ROLE_SYSTEM_ADMIN {
+		return true
+	}
+
+	if role == ROLE_NURSE {
+		return true
+	}
+
+	if role == ROLE_DOCTOR {
+		return true
+	}
+
+	if role == ROLE_RADIOLOGIST {
+		return true
+	}
+
+	if role == ROLE_TECHNICIAN {
+		return true
+	}
+
+	if role == ROLE_ADMINISTRATOR {
 		return true
 	}
 
