@@ -13,7 +13,7 @@
         "EnableSecurityFixAlert": true
     },
     "TeamSettings": {
-        "SiteName": "Mattermost",
+        "SiteName": "TabGen",
         "MaxUsersPerTeam": 50,
         "EnableTeamCreation": true,
         "EnableUserCreation": true,
@@ -27,14 +27,14 @@
         "DataSourceReplicas": [],
         "MaxIdleConns": 10,
         "MaxOpenConns": 10,
-        "Trace": false,
+        "Trace": true,
         "AtRestEncryptKey": "7rAh6iwQCkV4cA1Gsg3fgGOXJAQ43QVg"
     },
     "LogSettings": {
         "EnableConsole": true,
         "ConsoleLevel": "DEBUG",
         "EnableFile": true,
-        "FileLevel": "INFO",
+        "FileLevel": "DEBUG",
         "FileFormat": "",
         "FileLocation": ""
     },

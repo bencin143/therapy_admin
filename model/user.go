@@ -96,10 +96,10 @@ func (u *User) IsValid() *AppError {
 		return NewAppError("User.IsValid", "Invalid first name", "user_id="+u.Id)
 	}
 
+
 	if utf8.RuneCountInString(u.LastName) > 64 {
 		return NewAppError("User.IsValid", "Invalid last name", "user_id="+u.Id)
 	}
-
 	if len(u.Password) > 128 {
 		return NewAppError("User.IsValid", "Invalid password", "user_id="+u.Id)
 	}

@@ -27,3 +27,4 @@ export default class MemberListTeam extends React.Component {
 MemberListTeam.propTypes = {
     users: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
 };
+
