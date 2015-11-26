@@ -9,8 +9,6 @@ const Utils = require('../utils/utils.jsx');
 export default class MemberListTeamItem extends React.Component {
     constructor(props) {
         super(props);
-        console.log(' hello buddy ');
-        console.log('websocket connecting to ' );
         this.handleMakeMember = this.handleMakeMember.bind(this);
         this.handleMakeActive = this.handleMakeActive.bind(this);
         this.handleMakeNotActive = this.handleMakeNotActive.bind(this);

@@ -1,12 +1,12 @@
-# Mattermost
+# TabGen
 
-Mattermost is an open source, on-prem Slack-alternative. 
+TabGen is an open source, on-prem Slack-alternative. 
 
 It offers modern communication from behind your firewall, including messaging and file sharing across PCs and phones with archiving and instant search.
 
 ## All team communication in one place, searchable and accessible anywhere
 
-Please see the [features pages of the Mattermost website](http://www.mattermost.org/features/) for images and further description of the functionality listed below: 
+Please see the [features pages of the TabGen website](http://www.mattermost.org/features/) for images and further description of the functionality listed below: 
 
 #### Sharing Messaging and Files
 
@@ -22,15 +22,15 @@ Please see the [features pages of the Mattermost website](http://www.mattermost.
 
 #### Anywhere Access
 
-- Use Mattermost from web-enabled PCs and phones
+- Use TabGen from web-enabled PCs and phones
 - Attach sound, video and image files from mobile devices 
 - Define team-specific branding and color themes across your devices
 
 #### Self-Host Ready
 
-- Host and manage dozens of teams from a single Mattermost server 
-- Easily manage your Mattermost server using a web-based System Console
-- Script setup and maintenance using Mattermost command line tools 
+- Host and manage dozens of teams from a single TabGen server 
+- Easily manage your TabGen server using a web-based System Console
+- Script setup and maintenance using TabGen command line tools 
 
 ## Learn More
 
@@ -42,11 +42,11 @@ Please see the [features pages of the Mattermost website](http://www.mattermost.
 
 Follow us on Twitter at [@MattermostHQ](https://twitter.com/mattermosthq), or talk to the core team on our [daily builds server](https://pre-release.mattermost.com/core) via [this invite link](https://pre-release.mattermost.com/signup_user_complete/?id=rcgiyftm7jyrxnma1osd8zswby). 
 
-## Installing Mattermost
+## Installing TabGen
 
-Latest stable release of Mattermost is available from http://www.mattermost.org/download/, including binary distribution, and from install guides below. 
+Latest stable release of TabGen is available from http://www.mattermost.org/download/, including binary distribution, and from install guides below. 
 
-If you use Docker, you can [install Mattermost in a single-container preview in one line](https://github.com/mattermost/platform/blob/master/doc/install/Docker-Single-Container.md#one-line-docker-install). 
+If you use Docker, you can [install TabGen in a single-container preview in one line](https://github.com/mattermost/platform/blob/master/doc/install/Docker-Single-Container.md#one-line-docker-install). 
 
 #### Quick Start Install for Product Evaluation 
 
@@ -62,50 +62,50 @@ If you use Docker, you can [install Mattermost in a single-container preview in 
 
 #### Production Deployment
 
-Prior to production installation, please review [Mattermost system requirements](http://docs.mattermost.org/install/Requirements/index.html). 
+Prior to production installation, please review [TabGen system requirements](http://docs.mattermost.org/install/Requirements/index.html). 
 
-- [Production Install on Ubuntu 14.04](https://github.com/mattermost/platform/blob/master/doc/install/Production-Ubuntu.md) - Install Mattermost for production environments. 
+- [Production Install on Ubuntu 14.04](https://github.com/mattermost/platform/blob/master/doc/install/Production-Ubuntu.md) - Install TabGen for production environments. 
 
-- [GitLab Mattermost Production Installation](https://gitlab.com/gitlab-org/gitlab-mattermost) - Install Mattermost for production environments bundled with GitLab, a leading open source Git repository, using an omnibus package for Ubuntu 12.04, Ubuntu 14.04, Debian 7, Debian 8, and CentOS 6 (and RedHat/Oracle/Scientific Linux 6), CentOS 7 (and RedHat/Oracle/Scientific Linux 7). 
+- [GitLab TabGen Production Installation](https://gitlab.com/gitlab-org/gitlab-mattermost) - Install TabGen for production environments bundled with GitLab, a leading open source Git repository, using an omnibus package for Ubuntu 12.04, Ubuntu 14.04, Debian 7, Debian 8, and CentOS 6 (and RedHat/Oracle/Scientific Linux 6), CentOS 7 (and RedHat/Oracle/Scientific Linux 7). 
 
-For technical questions and answers, please visit the [Mattermost forum](http://forum.mattermost.org).
+For technical questions and answers, please visit the [TabGen forum](http://forum.mattermost.org).
 
-## Get Involved with Mattermost 
+## Get Involved with TabGen 
 
-Joining the Mattermost community is a great way to build relationships with other talented and like-minded professionals, increase awareness of the interesting work you are doing, and sharpen your skills. Here are some of the ways that you can make a difference in the Mattermost ecosystem:
+Joining the TabGen community is a great way to build relationships with other talented and like-minded professionals, increase awareness of the interesting work you are doing, and sharpen your skills. Here are some of the ways that you can make a difference in the TabGen ecosystem:
 
 #### Discuss
 
-- Visit the [Mattermost Forum](http://forum.mattermost.org/) for technical questions and answers. 
-- [Join](https://groups.google.com/a/mattermost.com/forum/#!forum/general/join) the [Mattermost User Mailing List](https://groups.google.com/a/mattermost.com/forum/#!forum/general) for general, open-ended questions and software announcements. 
-- [Join](https://groups.google.com/a/mattermost.com/forum/#!forum/developer/join) the [Mattermost Developers Mailing List](https://groups.google.com/a/mattermost.com/forum/#!forum/developer) for discussing contributing code to Mattermost. 
+- Visit the [TabGen Forum](http://forum.mattermost.org/) for technical questions and answers. 
+- [Join](https://groups.google.com/a/mattermost.com/forum/#!forum/general/join) the [TabGen User Mailing List](https://groups.google.com/a/mattermost.com/forum/#!forum/general) for general, open-ended questions and software announcements. 
+- [Join](https://groups.google.com/a/mattermost.com/forum/#!forum/developer/join) the [TabGen Developers Mailing List](https://groups.google.com/a/mattermost.com/forum/#!forum/developer) for discussing contributing code to TabGen. 
 
 #### Review
 
-- Share feedback on [Mattermost Design Feedback Requests](http://forum.mattermost.org/c/feature-ideas/specifications), which offer early previews of designs community comments and feedback. 
+- Share feedback on [TabGen Design Feedback Requests](http://forum.mattermost.org/c/feature-ideas/specifications), which offer early previews of designs community comments and feedback. 
 - Visit the [Feature Ideas Forum](http://mattermost.uservoice.com/forums/306457-general) and consider upvoting community feature ideas, which are reviewed for each monthly release.
 
 #### Share
 
-- Blog about your Mattermost experiences and use cases, either on your personal blog, the [Mattermost forum](http://forum.mattermost.org), or contribute a guest post to the [Mattermost blog](http://www.mattermost.org/category/blog/). If you write about Mattermost. please contact our community team at info@mattermost.com for help promoting your content.
-- Tweet to share with your community and friends why you use Mattermost. Follow [@MattermostHQ](https://twitter.com/mattermosthq) on Twitter and conversations on [#mattermost](https://twitter.com/search?q=%23mattermost&src=typd).
+- Blog about your TabGen experiences and use cases, either on your personal blog, the [TabGen forum](http://forum.mattermost.org), or contribute a guest post to the [TabGen blog](http://www.mattermost.org/category/blog/). If you write about TabGen. please contact our community team at info@mattermost.com for help promoting your content.
+- Tweet to share with your community and friends why you use TabGen. Follow [@MattermostHQ](https://twitter.com/mattermosthq) on Twitter and conversations on [#mattermost](https://twitter.com/search?q=%23mattermost&src=typd).
 
 #### Write
 
-- As with most open source projects, Mattermost documentation is maintained in a public repository. You can propose changes by [submitting pull requests (no programming skills required)](http://forum.mattermost.org/t/help-improve-mattermost-documentation/194). We highly welcome you to add improvements, write guides and tutorials, and expand on sections. 
-- Prior to contributing, please review [Mattermost Documentation Guidelines](http://www.mattermost.org/documentation-guidelines/), which include standards on writing Mattermost documentation for a global audience, who might not use English as their first language.
+- As with most open source projects, TabGen documentation is maintained in a public repository. You can propose changes by [submitting pull requests (no programming skills required)](http://forum.mattermost.org/t/help-improve-mattermost-documentation/194). We highly welcome you to add improvements, write guides and tutorials, and expand on sections. 
+- Prior to contributing, please review [TabGen Documentation Guidelines](http://www.mattermost.org/documentation-guidelines/), which include standards on writing TabGen documentation for a global audience, who might not use English as their first language.
 
 #### Contribute
 
-- Share [feature ideas](http://www.mattermost.org/feature-requests/) with the Mattermost community
-- Review the [Mattermost Code Contribution Guidelines](http://docs.mattermost.org/developer/Code-Contribution-Guidelines/index.html) to submit patches for the core product
-- Consider building tools that help developers and IT professionals manage Mattermost more effectively (API documentation coming in Beta2)
+- Share [feature ideas](http://www.mattermost.org/feature-requests/) with the TabGen community
+- Review the [TabGen Code Contribution Guidelines](http://docs.mattermost.org/developer/Code-Contribution-Guidelines/index.html) to submit patches for the core product
+- Consider building tools that help developers and IT professionals manage TabGen more effectively (API documentation coming in Beta2)
 
-##### Check out some projects for connecting to Mattermost: 
+##### Check out some projects for connecting to TabGen: 
 
-- [Matterbridge](https://github.com/42wim/matterbridge) - an IRC bridge connecting to Mattermost 
-- [GitLab Integration Service for Mattermost](https://github.com/mattermost/mattermost-integration-gitlab) - connecting GitLab to Mattermost via incoming webhooks
-- [Giphy Integration Service for Mattermost](https://github.com/mattermost/mattermost-integration-giphy) - connecting Mattermost to Giphy via outgoing webhooks
+- [Matterbridge](https://github.com/42wim/matterbridge) - an IRC bridge connecting to TabGen 
+- [GitLab Integration Service for TabGen](https://github.com/mattermost/mattermost-integration-gitlab) - connecting GitLab to TabGen via incoming webhooks
+- [Giphy Integration Service for TabGen](https://github.com/mattermost/mattermost-integration-giphy) - connecting TabGen to Giphy via outgoing webhooks
 
 #### Have other ideas or suggestions?
 

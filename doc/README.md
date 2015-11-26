@@ -1,9 +1,9 @@
-# Mattermost Documentation 
+# TabGen Documentation 
 
 ## Installation 
 
 #### Preview Installation
-See what Mattermost has to offer in a Docker-based preview install
+See what TabGen has to offer in a Docker-based preview install
 
 Local Machine: 
 - [One-line Docker Install](install/Docker-Single-Container.md#one-line-docker-install)
@@ -19,7 +19,7 @@ Optional:
 - [System Console Settings](install/Configuration-Settings.md)
 
 #### Production Installation
-Set up Mattermost in your data center using compiled binaries
+Set up TabGen in your data center using compiled binaries
 - [Software and Hardware Requirements](install/Requirements.md)
 - [Production Ubuntu Setup](install/Production-Ubuntu.md)
 - [SMTP Email Setup](install/SMTP-Email-Setup.md)
@@ -32,18 +32,18 @@ Optional
 #### Configuration and Management 
 - [System Console Settings](install/Configuration-Settings.md)
   - [GitLab SSO Configuration](integrations/Single-Sign-On/Gitlab.md) 
-- [Mattermost Release Numbering and Schedule](install/Release-Numbering.md)
+- [TabGen Release Numbering and Schedule](install/Release-Numbering.md)
 
 #### System Upgrades
-Procedures for upgrading the Mattermost server
-- [Mattermost Release Numbering and Schedule](install/Release-Numbering.md)
+Procedures for upgrading the TabGen server
+- [TabGen Release Numbering and Schedule](install/Release-Numbering.md)
 - [Upgrade Guide](install/Upgrade-Guide.md)
 
 ## Developer Documentation 
 
 - [Code Contribution Guidelines](https://github.com/mattermost/platform/blob/master/CONTRIBUTING.md)
 - [Developer Machine Setup](developer/Setup.md)
-- [Mattermost Style Guide](developer/Style-Guide.md)
+- [TabGen Style Guide](developer/Style-Guide.md)
 - [API Overview](developer/API.md)
  - [Incoming Webhooks](integrations/webhooks/Incoming-Webhooks.md) 
  - [Outgoing Webhooks](integrations/webhooks/Outgoing-Webhooks.md) 
@@ -63,7 +63,7 @@ _Note: End user help documentation is a new feature being completed for the v1.2
         - [Slack Import](https://github.com/mattermost/platform/blob/help-docs-update/doc/help/Team-Settings.md#import-from-slack-beta)
      - [Manage Members](help/Manage-Members.md)
    - Messaging
-     - [Mattermost Markdown Formatting](usage/Markdown.md)
+     - [TabGen Markdown Formatting](usage/Markdown.md)
    - [Search](help/Search.md)
      
 - System Console
