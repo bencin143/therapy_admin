@@ -468,6 +468,9 @@ func Login(c *Context, w http.ResponseWriter, r *http.Request, user *model.User,
 }
 
 func login(c *Context, w http.ResponseWriter, r *http.Request) {
+
+
+	l4g.Error(" login ", r.Body)
 	props := model.MapFromJson(r.Body)
 
 	if len(props["password"]) == 0 {

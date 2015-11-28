@@ -38,6 +38,9 @@ type Store interface {
 	System() SystemStore
 	Webhook() WebhookStore
 	Preference() PreferenceStore
+
+	Organisation() OrganisationStore
+	OrganisationUnit() OrganisationUnitStore
 	MarkSystemRanUnitTests()
 	Close()
 }
@@ -175,4 +178,16 @@ type PreferenceStore interface {
 	Get(userId string, category string, name string) StoreChannel
 	GetCategory(userId string, category string) StoreChannel
 	GetAll(userId string) StoreChannel
+}
+
+type OrganisationStore interface  {
+	Save(organisation *model.Organisation) StoreChannel
+	Update(organisation *model.Organisation) StoreChannel
+	GetByName(organisationName string) StoreChannel
+}
+
+type OrganisationUnitStore interface  {
+	Save(system *model.OrganisationUnit) StoreChannel
+	Update(system *model.OrganisationUnit) StoreChannel
+	//	Get() StoreChannel
 }

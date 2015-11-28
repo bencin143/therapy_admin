@@ -48,6 +48,9 @@ type SqlStore struct {
 	system     SystemStore
 	webhook    WebhookStore
 	preference PreferenceStore
+
+	organisation OrganisationStore
+	organisationUnit OrganisationUnitStore
 }
 
 func NewSqlStore() Store {
@@ -121,6 +124,9 @@ func NewSqlStore() Store {
 	sqlStore.webhook = NewSqlWebhookStore(sqlStore)
 	sqlStore.preference = NewSqlPreferenceStore(sqlStore)
 
+	sqlStore.organisation = NewSqlOrganisationStore(sqlStore)
+	sqlStore.organisationUnit = NewSqlOrganisationUnitStore(sqlStore)
+
 	err := sqlStore.master.CreateTablesIfNotExists()
 	if err != nil {
 		l4g.Critical("Error creating database tables: %v", err)
@@ -136,6 +142,8 @@ func NewSqlStore() Store {
 	sqlStore.system.(*SqlSystemStore).UpgradeSchemaIfNeeded()
 	sqlStore.webhook.(*SqlWebhookStore).UpgradeSchemaIfNeeded()
 	sqlStore.preference.(*SqlPreferenceStore).UpgradeSchemaIfNeeded()
+	sqlStore.organisation.(*SqlOrganisationStore).UpgradeSchemaIfNeeded()
+	sqlStore.organisationUnit.(*SqlOrganisationUnitStore).UpgradeSchemaIfNeeded()
 
 	sqlStore.team.(*SqlTeamStore).CreateIndexesIfNotExists()
 	sqlStore.channel.(*SqlChannelStore).CreateIndexesIfNotExists()
@@ -147,6 +155,7 @@ func NewSqlStore() Store {
 	sqlStore.system.(*SqlSystemStore).CreateIndexesIfNotExists()
 	sqlStore.webhook.(*SqlWebhookStore).CreateIndexesIfNotExists()
 	sqlStore.preference.(*SqlPreferenceStore).CreateIndexesIfNotExists()
+//	sqlStore.organisation.(*SqlOrganisationStore).createIndexIfNotExists()
 
 	if model.IsPreviousVersion(schemaVersion) || isSchemaVersion07 || isSchemaVersion10 {
 		sqlStore.system.Update(&model.System{Name: "Version", Value: model.CurrentVersion})
@@ -530,6 +539,14 @@ func (ss SqlStore) Webhook() WebhookStore {
 
 func (ss SqlStore) Preference() PreferenceStore {
 	return ss.preference
+}
+
+func (ss SqlStore) Organisation() OrganisationStore {
+	return ss.organisation
+}
+
+func (ss SqlStore) OrganisationUnit() OrganisationUnitStore {
+	return ss.organisationUnit
 }
 
 type mattermConverter struct{}
