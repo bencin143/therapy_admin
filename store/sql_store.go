@@ -49,8 +49,8 @@ type SqlStore struct {
 	webhook    WebhookStore
 	preference PreferenceStore
 
-	organisation OrganisationStore
-	organisationUnit OrganisationUnitStore
+	organisation 		OrganisationStore
+	organisationUnit 	OrganisationUnitStore
 }
 
 func NewSqlStore() Store {

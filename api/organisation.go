@@ -17,47 +17,41 @@ func InitOrganisation(r *mux.Router) {
 
 	sr := r.PathPrefix("/organisation").Subrouter()
 	sr.Handle("/create", ApiAppHandler(createOrganisation)).Methods("POST")
+	sr.Handle("/findByName", ApiAppHandler(findOrganisationByName)).Methods("POST")
 
-//	sr.Handle("/newimage", ApiUserRequired(uploadProfileImage)).Methods("POST")
-	sr.Handle("/me", ApiAppHandler(getMe)).Methods("GET")
-	sr.Handle("/status", ApiUserRequiredActivity(getStatuses, false)).Methods("POST")
 }
 
 func createOrganisation(c *Context, w http.ResponseWriter, r *http.Request) {
 
-
 	organisation := model.OrganisationFromJson(r.Body)
-	l4g.Error(" Organisation ", organisation , r.Body)
-
 	if organisation == nil {
 		c.SetInvalidParam("createOrganisation", "organisation")
 		return
 	}
 
-	if result := <-Srv.Store.Organisation().GetByName(organisation.Name); result.Err != nil {
+	if result := <-Srv.Store.Organisation().Save(organisation); result.Err != nil {
 		c.Err = result.Err
 		return
 	} else {
 		organisation = result.Data.(*model.Organisation)
 	}
+	w.Write([]byte(organisation.ToJson()))
+}
 
-//	hash := r.URL.Query().Get("h")
+func findOrganisationByName(c *Context, w http.ResponseWriter, r *http.Request) {
 
-	rOrganisation := CreateOrganisation(c, organisation)
-	if c.Err != nil {
+	organisation := model.OrganisationFromJson(r.Body)
+	if organisation == nil {
+		c.SetInvalidParam("findOrganisationByName", "organisation")
 		return
 	}
 
-	w.Write([]byte(rOrganisation.ToJson()))
-}
-
-func CreateOrganisation(c *Context, organisation *model.Organisation) *model.Organisation {
-
-	if result := <-Srv.Store.Organisation().Save(organisation); result.Err != nil {
+	if result := <-Srv.Store.Organisation().GetByName(organisation.Name); result.Err != nil {
+		w.Write([]byte(result.Err.ToJson()))
 		c.Err = result.Err
-		l4g.Error("Couldn't save the Organisation err=%v", result.Err)
-		return nil
+		return
+	} else {
+		organisation = result.Data.(*model.Organisation)
 	}
-	l4g.Error("Organisation savee")
-	return nil
+	w.Write([]byte(organisation.ToJson()))
 }

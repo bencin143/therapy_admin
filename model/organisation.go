@@ -28,7 +28,7 @@ func OrganisationFromJson(data io.Reader) *Organisation {
 	}
 }
 
-// ToJson convert a User to a json string
+// ToJson convert a Organisation to a json string
 func (o *Organisation) ToJson() string {
 	b, err := json.Marshal(o)
 	if err != nil {

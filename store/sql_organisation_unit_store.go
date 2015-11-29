@@ -1,6 +1,7 @@
 package store
 
 import (
+	l4g "code.google.com/p/log4go"
 	"github.com/mattermost/platform/model"
 // "github.com/mattermost/platform/utils"
 )
@@ -15,10 +16,9 @@ func NewSqlOrganisationUnitStore(sqlStore *SqlStore) OrganisationUnitStore {
 	for _, db := range sqlStore.GetAllConns() {
 		table := db.AddTableWithName(model.OrganisationUnit{}, "OrganisationUnit").SetKeys(false, "Id")
 		table.ColMap("Id").SetMaxSize(26)
-		table.ColMap("DisplayName").SetMaxSize(64)
-		table.ColMap("Name").SetMaxSize(64).SetUnique(true)
+		table.ColMap("OrganisationId").SetMaxSize(64)
 		table.ColMap("Email").SetMaxSize(128)
-		table.ColMap("UnitName").SetMaxSize(64)
+		table.ColMap("UnitName").SetMaxSize(64).SetUnique(true)
 	}
 	return s
 }
@@ -31,7 +31,6 @@ func (s SqlOrganisationUnitStore) Save(organisationUnit *model.OrganisationUnit)
 
 	go func() {
 		result := StoreResult{}
-
 		if len(organisationUnit.Id) > 0 {
 			result.Err = model.NewAppError("SqlOrganisationStore.Save",
 				"Must call update for exisiting organisation", "id="+ organisationUnit.Id)
@@ -41,6 +40,7 @@ func (s SqlOrganisationUnitStore) Save(organisationUnit *model.OrganisationUnit)
 		}
 
 		organisationUnit.PreSave()
+
 
 		if err := s.GetMaster().Insert(organisationUnit); err != nil {
 			if IsUniqueConstraintError(err.Error(), "Name", "organisation_unit_name_key") {
@@ -76,7 +76,7 @@ func (s SqlOrganisationUnitStore) Update(organisationUnit *model.OrganisationUni
 			oldOrganisationUnit := oldResult.(*model.OrganisationUnit)
 			organisationUnit.CreateAt = oldOrganisationUnit.CreateAt
 			organisationUnit.UpdateAt = model.GetMillis()
-			organisationUnit.Name = oldOrganisationUnit.Name
+			organisationUnit.UnitName = oldOrganisationUnit.UnitName
 
 			if count, err := s.GetMaster().Update(organisationUnit); err != nil {
 				result.Err = model.NewAppError("SqlOrganisationUnitStore.Update", "We encountered an error updating the organisation Unit", "id="+ organisationUnit.Id+", "+err.Error())

@@ -187,7 +187,8 @@ type OrganisationStore interface  {
 }
 
 type OrganisationUnitStore interface  {
-	Save(system *model.OrganisationUnit) StoreChannel
-	Update(system *model.OrganisationUnit) StoreChannel
+	Save(organisationUnit *model.OrganisationUnit) StoreChannel
+	Update(organisationUnit *model.OrganisationUnit) StoreChannel
+	GetByName(organisationUnitName string) StoreChannel
 	//	Get() StoreChannel
 }
