@@ -172,7 +172,7 @@ export default class AdminSidebar extends React.Component {
                                             className={this.isSelected('team_settings')}
                                             onClick={this.handleClick.bind(this, 'team_settings', null)}
                                         >
-                                            {'Team Settings'}
+                                            {'OrganisationUnit Settings'}
                                         </a>
                                     </li>
                                     <li>

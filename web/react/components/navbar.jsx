@@ -67,6 +67,7 @@ export default class Navbar extends React.Component {
             }
         );
     }
+
     hideSidebars(e) {
         var windowWidth = $(window).outerWidth();
         if (windowWidth <= 768) {
@@ -127,7 +128,7 @@ export default class Navbar extends React.Component {
                         data-title={channel.display_name}
                         data-channelid={channel.id}
                     >
-                        {'Set Channel Header...'}
+                        {'Set Tab Header...'}
                     </a>
                 </li>
             );
@@ -141,7 +142,7 @@ export default class Navbar extends React.Component {
                             href='#'
                             onClick={() => this.setState({showEditChannelPurposeModal: true})}
                         >
-                            {'Set Channel Purpose...'}
+                            {'Set Tab Purpose...'}
                         </a>
                     </li>
                 );

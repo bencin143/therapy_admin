@@ -71,12 +71,12 @@ export default class EmailSignUpPage extends React.Component {
                         className='btn btn-md btn-primary'
                         type='submit'
                     >
-                        {'Create Team'}
+                        {'Create Organisation'}
                     </button>
                     {serverError}
                 </div>
                 <div className='form-group margin--extra-2x'>
-                    <span><a href='/find_team'>{`Find my teams`}</a></span>
+                    <span><a href='/find_team'>{`Find my Organisation`}</a></span>
                 </div>
             </form>
         );

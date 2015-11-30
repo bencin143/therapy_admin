@@ -62,9 +62,9 @@ export default class TutorialIntroScreens extends React.Component {
         return (
             <div>
                 <h3>{'Welcome to:'}</h3>
-                <h1>{'Mattermost'}</h1>
-                <p>{'Your team communication all in one place, instantly searchable and available anywhere.'}</p>
-                <p>{'Keep your team connected to help them achieve what matters most.'}</p>
+                <h1>{'TabGen'}</h1>
+                <p>{'Your organisation communication all in one place, instantly searchable and available anywhere.'}</p>
+                <p>{'Keep your organisation connected to help them achieve what TabGen.'}</p>
                 {circles}
             </div>
         );
@@ -75,7 +75,7 @@ export default class TutorialIntroScreens extends React.Component {
         return (
             <div>
                 <h3>{'How Mattermost works:'}</h3>
-                <p>{'Communication happens in public discussion channels, private groups and direct messages.'}</p>
+                <p>{'Communication happens in public discussion Tabs, private Tabs and direct messages.'}</p>
                 <p>{'Everything is archived and searchable from any web-enabled desktop, laptop or phone.'}</p>
                 {circles}
             </div>
@@ -92,7 +92,7 @@ export default class TutorialIntroScreens extends React.Component {
                     data-toggle='modal'
                     data-target='#invite_member'
                 >
-                    {'Invite teammates'}
+                    {'Invite user'}
                 </a>
             );
         } else {
@@ -105,7 +105,7 @@ export default class TutorialIntroScreens extends React.Component {
                     data-title='Team Invite'
                     data-value={Utils.getWindowLocationOrigin() + '/signup_user_complete/?id=' + team.id}
                 >
-                    {'Invite teammates'}
+                    {'Invite users'}
                 </a>
             );
         }
@@ -125,11 +125,11 @@ export default class TutorialIntroScreens extends React.Component {
                         href='mailto:feedback@mattermost.com'
                         target='_blank'
                     >
-                        {'feedback@mattermost.com'}
+                        {'feedback@appsembly.com'}
                     </a>
                     {'.'}
                 </p>
-                {'Click “Next” to enter Town Square. This is the first channel teammates see when they sign up. Use it for posting updates everyone needs to know.'}
+                {'Click “Next” to enter Town Square. This is the first tab user see when they sign up. Use it for posting updates everyone needs to know.'}
                 {circles}
             </div>
         );

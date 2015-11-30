@@ -306,7 +306,7 @@ export default class InviteMemberModal extends React.Component {
                         >Add another</button>
                         <br/>
                         <br/>
-                        <span>People invited automatically join Town Square channel.</span>
+                        <span>People invited automatically join Town Square Tab.</span>
                     </div>
                 );
 
@@ -342,7 +342,7 @@ export default class InviteMemberModal extends React.Component {
                                 data-title='Team Invite'
                                 data-value={linkUrl}
                                 onClick={() => this.handleHide(this, false)}
-                            >Team Invite Link</a>
+                            >Organisation Invite Link</a>
                     );
 
                     teamInviteLink = (
@@ -354,7 +354,7 @@ export default class InviteMemberModal extends React.Component {
 
                 content = (
                     <div>
-                        <p>Email is currently disabled for your team, and email invitations cannot be sent. Contact your system administrator to enable email and email invitations.</p>
+                        <p>Email is currently disabled for your organisation, and email invitations cannot be sent. Contact your system administrator to enable email and email invitations.</p>
                         {teamInviteLink}
                     </div>
                 );
@@ -370,7 +370,7 @@ export default class InviteMemberModal extends React.Component {
                         backdrop={this.state.isSendingEmails ? 'static' : true}
                     >
                         <Modal.Header closeButton={!this.state.isSendingEmails}>
-                            <Modal.Title>{'Invite New Member'}</Modal.Title>
+                            <Modal.Title>{'Invite New User'}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body ref='modalBody'>
                             <form role='form'>

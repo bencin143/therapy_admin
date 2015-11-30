@@ -20,7 +20,7 @@ export default class Login extends React.Component {
 
         const name = this.props.teamName;
         if (!name) {
-            state.serverError = 'Bad team name';
+            state.serverError = 'Bad Organisation name';
             this.setState(state);
             return;
         }

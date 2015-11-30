@@ -123,8 +123,8 @@ export default class MoreChannels extends React.Component {
             } else {
                 moreChannels = (
                     <div className='no-channel-message'>
-                       <p className='primary-message'>No more channels to join</p>
-                       <p className='secondary-message'>Click 'Create New Channel' to make a new one</p>
+                       <p className='primary-message'>No more tabs to join</p>
+                       <p className='secondary-message'>Click 'Create New Tab' to make a new one</p>
                     </div>
                 );
             }
@@ -150,13 +150,13 @@ export default class MoreChannels extends React.Component {
                                 <span aria-hidden='true'>{'×'}</span>
                                 <span className='sr-only'>{'Close'}</span>
                             </button>
-                            <h4 className='modal-title'>{'More Channels'}</h4>
+                            <h4 className='modal-title'>{'More Tabs'}</h4>
                             <button
                                 type='button'
                                 className='btn btn-primary channel-create-btn'
                                 onClick={this.handleNewChannel}
                             >
-                                {'Create New Channel'}
+                                {'Create New Tabs'}
                             </button>
                             <NewChannelFlow
                                 show={this.state.showNewChannelModal}

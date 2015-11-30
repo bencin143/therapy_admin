@@ -170,7 +170,7 @@ export default class ChannelHeader extends React.Component {
                         data-title={channel.display_name}
                         data-channelid={channel.id}
                     >
-                        {'Set Channel Header...'}
+                        {'Set Tab Header...'}
                     </a>
                 </li>
             );

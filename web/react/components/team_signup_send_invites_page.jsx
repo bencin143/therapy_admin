@@ -125,7 +125,7 @@ export default class TeamSignupSendInvitesPage extends React.Component {
 
             bottomContent = (
                 <p className='color--light'>
-                    {'if you prefer, you can invite team members later'}
+                    {'if you prefer, you can invite organisation users later'}
                     <br />
                     {' and '}
                     <a
@@ -152,7 +152,7 @@ export default class TeamSignupSendInvitesPage extends React.Component {
                         className='signup-team-logo'
                         src='/static/images/logo.png'
                     />
-                    <h2>{'Invite Team Members'}</h2>
+                    <h2>{'Invite Organisation Users'}</h2>
                     {content}
                     <div className='form-group'>
                         <button

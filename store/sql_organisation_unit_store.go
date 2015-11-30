@@ -1,7 +1,6 @@
 package store
 
 import (
-	l4g "code.google.com/p/log4go"
 	"github.com/mattermost/platform/model"
 // "github.com/mattermost/platform/utils"
 )

@@ -315,25 +315,25 @@ export default class Sidebar extends React.Component {
 
         screens.push(
             <div>
-                <h4>{'"Town Square" and "Off-Topic" channels'}</h4>
-                <p>{'Here are two public channels to start:'}</p>
+                <h4>{'"Town Square" and "Off-Topic" Tabs'}</h4>
+                <p>{'Here are two public Tabls to start:'}</p>
                 <p>
-                    <strong>{'Town Square'}</strong>{' is a place for team-wide communication. Everyone in your team is a member of this channel.'}
+                    <strong>{'Town Square'}</strong>{' is a place for organisation communication. Everyone in your OU is a member of this Tab.'}
                 </p>
                 <p>
-                    <strong>{'Off-Topic'}</strong>{' is a place for fun and humor outside of work-related channels. You and your team can decide what other channels to create.'}
+                    <strong>{'Off-Topic'}</strong>{' is a place for fun and humor outside of work-related tab. You and your OU can decide what other tabs to create.'}
                 </p>
             </div>
         );
 
         screens.push(
             <div>
-                <h4>{'Creating and Joining Channels'}</h4>
+                <h4>{'Creating and Joining Tabs'}</h4>
                 <p>
-                    {'Click '}<strong>{'"More..."'}</strong>{' to create a new channel or join an existing one.'}
+                    {'Click '}<strong>{'"More..."'}</strong>{' to create a new tab or join an existing one.'}
                 </p>
                 <p>
-                    {'You can also create a new channel or private group by clicking the '}<strong>{'"+" symbol'}</strong>{' next to the channel or private group header.'}
+                    {'You can also create a new tab or private Tab by clicking the '}<strong>{'"+" symbol'}</strong>{' next to the tab or private tab header.'}
                 </p>
             </div>
         );
@@ -607,7 +607,7 @@ export default class Sidebar extends React.Component {
                     <ul className='nav nav-pills nav-stacked'>
                         <li>
                             <h4>
-                                {'Channels'}
+                                {'Tabs'}
                                 <OverlayTrigger
                                     delayShow={500}
                                     placement='top'
@@ -640,7 +640,7 @@ export default class Sidebar extends React.Component {
                     <ul className='nav nav-pills nav-stacked'>
                         <li>
                             <h4>
-                                {'Private Groups'}
+                                {'Private Tabs'}
                                 <OverlayTrigger
                                     delayShow={500}
                                     placement='top'

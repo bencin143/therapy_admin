@@ -110,7 +110,7 @@ export default class TeamSignupWelcomePage extends React.Component {
                 />
                 <h3 className='sub-heading'>Welcome to:</h3>
                 <h1 className='margin--top-none'>{global.window.mm_config.SiteName}</h1>
-                <p className='margin--less'>Let's set up your new team</p>
+                <p className='margin--less'>Let's set up your new Organisation</p>
                 <div>
                     Please confirm your email address:<br />
                     <div className='inner__content'>
@@ -118,7 +118,7 @@ export default class TeamSignupWelcomePage extends React.Component {
                     </div>
                 </div>
                 <p className='margin--extra color--light'>
-                    Your account will administer the new team site. <br />
+                    Your account will administer the new organisation site. <br />
                     You can add other administrators later.
                 </p>
                 <div className='form-group'>

@@ -1225,10 +1225,12 @@ export function sortByDisplayName(a, b) {
 }
 
 export function getChannelTerm(channelType) {
-    let channelTerm = 'Channel';
+    let channelTerm = 'Tabs';
     if (channelType === Constants.PRIVATE_CHANNEL) {
         channelTerm = 'Group';
     }
+
+
 
     return channelTerm;
 }

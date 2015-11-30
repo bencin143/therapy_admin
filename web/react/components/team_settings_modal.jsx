@@ -67,7 +67,7 @@ export default class TeamSettingsModal extends React.Component {
                                 className='modal-title'
                                 ref='title'
                             >
-                                {'Team Settings'}
+                                {'Organisation Unit Settings'}
                             </h4>
                         </div>
                         <div className='modal-body'>

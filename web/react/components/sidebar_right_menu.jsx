@@ -48,7 +48,7 @@ export default class SidebarRightMenu extends React.Component {
                         href='#'
                         onClick={InviteMemberModal.show}
                     >
-                        <i className='glyphicon glyphicon-user'></i>Invite New Member
+                        <i className='glyphicon glyphicon-user'></i>Invite New User
                     </a>
                 </li>
             );
@@ -61,7 +61,7 @@ export default class SidebarRightMenu extends React.Component {
                             data-target='#get_link'
                             data-title='Team Invite'
                             data-value={utils.getWindowLocationOrigin() + '/signup_user_complete/?id=' + TeamStore.getCurrent().invite_id}
-                        ><i className='glyphicon glyphicon-link'></i>Get Team Invite Link</a>
+                        ><i className='glyphicon glyphicon-link'></i>Get OrganisationUnit Invite Link</a>
                     </li>
                 );
             }
@@ -74,7 +74,7 @@ export default class SidebarRightMenu extends React.Component {
                         href='#'
                         data-toggle='modal'
                         data-target='#team_settings'
-                    ><i className='glyphicon glyphicon-globe'></i>Team Settings</a>
+                    ><i className='glyphicon glyphicon-globe'></i>OrganisationUnit Settings</a>
                 </li>
             );
             manageLink = (
@@ -84,7 +84,7 @@ export default class SidebarRightMenu extends React.Component {
                         data-toggle='modal'
                         data-target='#team_members'
                     >
-                    <i className='glyphicon glyphicon-wrench'></i>Manage Members</a>
+                    <i className='glyphicon glyphicon-wrench'></i>Manage Users</a>
                 </li>
             );
         }

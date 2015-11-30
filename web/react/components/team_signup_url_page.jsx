@@ -96,7 +96,7 @@ export default class TeamSignupUrlPage extends React.Component {
                         className='signup-team-logo'
                         src='/static/images/logo.png'
                     />
-                    <h2>{`Team URL`}</h2>
+                    <h2>{`Organisation URL`}</h2>
                     <div className={nameDivClass}>
                         <div className='row'>
                             <div className='col-sm-11'>
@@ -124,7 +124,7 @@ export default class TeamSignupUrlPage extends React.Component {
                         </div>
                         {nameError}
                     </div>
-                    <p>{`Choose the web address of your new team:`}</p>
+                    <p>{`Choose the web address of your new organisation:`}</p>
                     <ul className='color--light'>
                         <li>Short and memorable is best</li>
                         <li>Use lowercase letters, numbers and dashes</li>

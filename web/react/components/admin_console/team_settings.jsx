@@ -75,7 +75,7 @@ export default class TeamSettings extends React.Component {
         return (
             <div className='wrapper--fixed'>
 
-                <h3>{'Team Settings'}</h3>
+                <h3>{'OrganisationUnit Settings'}</h3>
                 <form
                     className='form-horizontal'
                     role='form'

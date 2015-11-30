@@ -94,7 +94,7 @@ export default class GetLinkModal extends React.Component {
                             </div>
                             <div className='modal-body'>
                                 <p>
-                                Send teammates the link below for them to sign-up to this team site.
+                                Send users the link below for them to sign-up to this team site.
                                 <br /><br />
                                 </p>
                                 <textarea

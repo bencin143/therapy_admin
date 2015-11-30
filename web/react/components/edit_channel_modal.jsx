@@ -39,7 +39,7 @@ export default class EditChannelModal extends React.Component {
             },
             (err) => {
                 if (err.message === 'Invalid channel_header parameter') {
-                    this.setState({serverError: 'This channel header is too long, please enter a shorter one'});
+                    this.setState({serverError: 'This tab header is too long, please enter a shorter one'});
                 } else {
                     this.setState({serverError: err.message});
                 }
@@ -115,7 +115,7 @@ export default class EditChannelModal extends React.Component {
                             {editTitle}
                         </div>
                         <div className='modal-body'>
-                            <p>{'Edit the text appearing next to the channel name in the channel header.'}</p>
+                            <p>{'Edit the text appearing next to the Tab name in the tab header.'}</p>
                             <textarea
                                 className='form-control no-resize'
                                 rows='6'

@@ -72,15 +72,15 @@ export default class NewChannelModal extends React.Component {
             );
             break;
         case 'O':
-            channelTerm = 'Channel';
+            channelTerm = 'Tab';
             channelSwitchText = (
                 <div className='modal-intro'>
-                    {'Create a new public channel anyone can join. '}
+                    {'Create a new public Tab anyone can join. '}
                     <a
                         href='#'
                         onClick={this.props.onTypeSwitched}
                     >
-                        {'Create a private group'}
+                        {'Create a private Tab'}
                     </a>
                 </div>
             );

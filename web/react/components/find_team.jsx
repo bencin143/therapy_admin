@@ -50,17 +50,17 @@ export default class FindTeam extends React.Component {
         if (this.state.sent) {
             return (
                 <div>
-                    <h4>{'Find Your teams'}</h4>
-                    <p>{'An email was sent with links to any teams to which you are a member.'}</p>
+                    <h4>{'Find Your Organisation'}</h4>
+                    <p>{'An email was sent with links to any organisation to which you are a user.'}</p>
                 </div>
             );
         }
 
         return (
         <div>
-                <h4>Find Your Team</h4>
+                <h4>Find Your Organisation</h4>
                 <form onSubmit={this.handleSubmit}>
-                    <p>{'Get an email with links to any teams to which you are a member.'}</p>
+                    <p>{'Get an email with links to any organisation to which you are a user.'}</p>
                     <div className='form-group'>
                         <label className='control-label'>Email</label>
                         <div className={emailErrorClass}>

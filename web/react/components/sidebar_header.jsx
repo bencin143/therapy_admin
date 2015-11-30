@@ -54,13 +54,13 @@ export default class SidebarHeader extends React.Component {
                 <h4>{'Main Menu'}</h4>
                 <p>
                 {'The '}<strong>{'Main Menu'}</strong>{' is where you can '}
-                <strong>{'Invite New Members'}</strong>
+                <strong>{'Invite New User'}</strong>
                 {', access your '}
                 <strong>{'Account Settings'}</strong>
                 {' and set your '}<strong>{'Theme Color'}</strong>{'.'}
                 </p>
                 <p>
-                {'Team administrators can also access their '}<strong>{'Team Settings'}</strong>{' from this menu.'}
+                {'Team administrators can also access their '}<strong>{'OrganisationUnit Settings'}</strong>{' from this menu.'}
                 </p>
                 <p>
                 {'System administrators will find a '}<strong>{'System Console'}</strong>{' option to administrate the entire system.'}

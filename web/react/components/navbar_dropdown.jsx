@@ -95,7 +95,7 @@ export default class NavbarDropdown extends React.Component {
                         href='#'
                         onClick={InviteMemberModal.show}
                     >
-                        {'Invite New Member'}
+                        {'Invite New User'}
                     </a>
                 </li>
             );
@@ -110,7 +110,7 @@ export default class NavbarDropdown extends React.Component {
                             data-title='Team Invite'
                             data-value={Utils.getWindowLocationOrigin() + '/signup_user_complete/?id=' + TeamStore.getCurrent().invite_id}
                         >
-                            {'Get Team Invite Link'}
+                            {'Get OrganisationUnit Invite Link'}
                         </a>
                     </li>
                 );
@@ -125,7 +125,7 @@ export default class NavbarDropdown extends React.Component {
                         data-toggle='modal'
                         data-target='#team_members'
                     >
-                        {'Manage Members'}
+                        {'Manage User'}
                     </a>
                 </li>
             );
@@ -139,7 +139,7 @@ export default class NavbarDropdown extends React.Component {
                         data-toggle='modal'
                         data-target='#team_settings'
                     >
-                        {'Team Settings'}
+                        {'OU Settings'}
                     </a>
                 </li>
             );
@@ -183,7 +183,7 @@ export default class NavbarDropdown extends React.Component {
                         target='_blank'
                         href={Utils.getWindowLocationOrigin() + '/signup_team'}
                     >
-                        {'Create a New Team'}
+                        {'Create OrganisationUnit'}
                     </a>
                 </li>
             );
@@ -256,7 +256,7 @@ export default class NavbarDropdown extends React.Component {
                                 href='#'
                                 onClick={this.handleAboutModal}
                             >
-                                {'About Mattermost'}
+                                {'About TabGen'}
                             </a>
                         </li>
                         <UserSettingsModal

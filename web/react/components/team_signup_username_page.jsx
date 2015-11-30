@@ -59,7 +59,7 @@ export default class TeamSignupUsernamePage extends React.Component {
                         src='/static/images/logo.png'
                     />
                     <h2 className='margin--less'>Your username</h2>
-                    <h5 className='color--light'>{'Select a memorable username that makes it easy for teammates to identify you:'}</h5>
+                    <h5 className='color--light'>{'Select a memorable username that makes it easy for users to identify you:'}</h5>
                     <div className='inner__content margin--extra'>
                         <div className={nameDivClass}>
                             <div className='row'>

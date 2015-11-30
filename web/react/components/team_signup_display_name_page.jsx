@@ -56,7 +56,7 @@ export default class TeamSignupDisplayNamePage extends React.Component {
                         className='signup-team-logo'
                         src='/static/images/logo.png'
                     />
-                    <h2>{'Team Name'}</h2>
+                    <h2>{'Organisation Name'}</h2>
                     <div className={nameDivClass}>
                         <div className='row'>
                             <div className='col-sm-9'>
@@ -76,7 +76,7 @@ export default class TeamSignupDisplayNamePage extends React.Component {
                         {nameError}
                     </div>
                     <div>
-                        {'Name your team in any language. Your team name shows in menus and headings.'}
+                        {'Name your organisation in any language. Your organisation name shows in menus and headings.'}
                     </div>
                     <button
                         type='submit'

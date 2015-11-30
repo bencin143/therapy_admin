@@ -21,7 +21,7 @@ export default class ChooseAuthPage extends React.Component {
                         }
                     >
                         <span className='icon' />
-                        <span>{'Create new team with GitLab Account'}</span>
+                        <span>{'Create new organisation with GitLab Account'}</span>
                     </a>
             );
         }
@@ -39,7 +39,7 @@ export default class ChooseAuthPage extends React.Component {
                         }
                     >
                         <span className='fa fa-envelope' />
-                        <span>{'Create new team with email address'}</span>
+                        <span>{'Create new Organisation with email address'}</span>
                     </a>
             );
         }
@@ -52,7 +52,7 @@ export default class ChooseAuthPage extends React.Component {
             <div>
                 {buttons}
                 <div className='form-group margin--extra-2x'>
-                    <span><a href='/find_team'>{'Find my teams'}</a></span>
+                    <span><a href='/find_team'>{'Find my Organisation'}</a></span>
                 </div>
             </div>
         );

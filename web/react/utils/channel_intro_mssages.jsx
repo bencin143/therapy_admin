@@ -134,7 +134,7 @@ export function createDefaultIntroMessage(channel) {
             <p className='channel-intro__content'>
                 <strong>{'Welcome to ' + channel.display_name + '!'}</strong>
                 <br/><br/>
-                {'This is the first channel teammates see when they sign up - use it for posting updates everyone needs to know.'}
+                {'This is the first tab user see when they sign up - use it for posting updates everyone needs to know.'}
             </p>
             {inviteModalLink}
             <a

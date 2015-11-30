@@ -10,6 +10,7 @@ import (
 	_ "image/gif"
 	_ "image/jpeg"
 	"net/http"
+//	"database/sql"
 )
 
 func InitOrganisationUnit(r *mux.Router) {
@@ -31,12 +32,6 @@ func createOrganisationUnit(c *Context, w http.ResponseWriter, r *http.Request) 
 	}
 	if organisationUnit.OrganisationName == "" {
 		c.SetInvalidParam("createOrganisationUnit", "organisationUnit")
-		return
-	}
-
-	if result := <-Srv.Store.Organisation().GetByName(organisationUnit.OrganisationName); result.Err != nil {
-		c.Err = result.Err
-		l4g.Debug( " *************** " ,result.Data," ***** " ,result.Err )
 		return
 	}
 

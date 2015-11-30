@@ -277,13 +277,13 @@ export default class GeneralTab extends React.Component {
                         </label>
                         <br/>
                     </div>
-                    <div><br/>{'Including this team will display the team name from the Team Directory section of the Home Page, and provide a link to the sign-in page.'}</div>
+                    <div><br/>{'Including this Organisation unit will display the Unit name from the Organisation Directory section of the Home Page, and provide a link to the sign-in page.'}</div>
                 </div>
             ];
 
             teamListingSection = (
                 <SettingItemMax
-                    title='Include this team in the Team Directory'
+                    title='Include this Organisation in the Organisation Directory'
                     inputs={inputs}
                     submit={this.handleTeamListingSubmit}
                     server_error={serverError}
@@ -301,7 +301,7 @@ export default class GeneralTab extends React.Component {
 
             teamListingSection = (
                 <SettingItemMin
-                    title='Include this team in the Team Directory'
+                    title='Include this OrganisationUnit in the OU Directory'
                     describe={describe}
                     updateSection={this.onUpdateTeamListingSection}
                 />
@@ -446,7 +446,7 @@ export default class GeneralTab extends React.Component {
 
             nameSection = (
                 <SettingItemMax
-                    title={`Team Name`}
+                    title={`OrganisationUnit Name`}
                     inputs={inputs}
                     submit={this.handleNameSubmit}
                     server_error={serverError}
@@ -459,7 +459,7 @@ export default class GeneralTab extends React.Component {
 
             nameSection = (
                 <SettingItemMin
-                    title={`Team Name`}
+                    title={`OrganisationUnit Name`}
                     describe={describe}
                     updateSection={this.onUpdateNameSection}
                 />

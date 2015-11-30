@@ -302,7 +302,7 @@ export default class ChannelNotifications extends React.Component {
                 e.preventDefault();
             }.bind(this);
 
-            const extraInfo = <span>{'The channel name is bolded in the sidebar when there are unread messages. Selecting "Only for mentions" will bold the channel only when you are mentioned.'}</span>;
+            const extraInfo = <span>{'The tab name is bolded in the sidebar when there are unread messages. Selecting "Only for mentions" will bold the channel only when you are mentioned.'}</span>;
 
             content = (
                 <SettingItemMax
