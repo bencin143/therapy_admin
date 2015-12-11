@@ -41,6 +41,8 @@ type Store interface {
 
 	Organisation() OrganisationStore
 	OrganisationUnit() OrganisationUnitStore
+	Role() RoleStore
+
 	MarkSystemRanUnitTests()
 	Close()
 }
@@ -191,4 +193,9 @@ type OrganisationUnitStore interface  {
 	Update(organisationUnit *model.OrganisationUnit) StoreChannel
 	GetByName(organisationUnitName string) StoreChannel
 	//	Get() StoreChannel
+}
+
+type RoleStore interface  {
+	Save(organisationUnit *model.Role) StoreChannel
+	GetRoles(organisationUnitName string) StoreChannel
 }

@@ -51,6 +51,7 @@ type SqlStore struct {
 
 	organisation 		OrganisationStore
 	organisationUnit 	OrganisationUnitStore
+	role			RoleStore
 }
 
 func NewSqlStore() Store {
@@ -126,6 +127,7 @@ func NewSqlStore() Store {
 
 	sqlStore.organisation = NewSqlOrganisationStore(sqlStore)
 	sqlStore.organisationUnit = NewSqlOrganisationUnitStore(sqlStore)
+	sqlStore.role = NewSqlRoleStore(sqlStore)
 
 	err := sqlStore.master.CreateTablesIfNotExists()
 	if err != nil {
@@ -144,6 +146,7 @@ func NewSqlStore() Store {
 	sqlStore.preference.(*SqlPreferenceStore).UpgradeSchemaIfNeeded()
 	sqlStore.organisation.(*SqlOrganisationStore).UpgradeSchemaIfNeeded()
 	sqlStore.organisationUnit.(*SqlOrganisationUnitStore).UpgradeSchemaIfNeeded()
+	sqlStore.role.(*SqlRoleStore).UpgradeSchemaIfNeeded()
 
 	sqlStore.team.(*SqlTeamStore).CreateIndexesIfNotExists()
 	sqlStore.channel.(*SqlChannelStore).CreateIndexesIfNotExists()
@@ -547,6 +550,10 @@ func (ss SqlStore) Organisation() OrganisationStore {
 
 func (ss SqlStore) OrganisationUnit() OrganisationUnitStore {
 	return ss.organisationUnit
+}
+
+func (ss SqlStore) Role() RoleStore {
+	return ss.role
 }
 
 type mattermConverter struct{}
