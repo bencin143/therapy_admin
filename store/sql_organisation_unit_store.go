@@ -15,9 +15,9 @@ func NewSqlOrganisationUnitStore(sqlStore *SqlStore) OrganisationUnitStore {
 	for _, db := range sqlStore.GetAllConns() {
 		table := db.AddTableWithName(model.OrganisationUnit{}, "OrganisationUnit").SetKeys(false, "Id")
 		table.ColMap("Id").SetMaxSize(26)
-		table.ColMap("OrganisationId").SetMaxSize(64)
-		table.ColMap("Email").SetMaxSize(128)
-		table.ColMap("UnitName").SetMaxSize(64).SetUnique(true)
+		table.ColMap("Organisation").SetMaxSize(64)
+		table.ColMap("OrganisationUnit").SetMaxSize(64)
+		table.SetUniqueTogether("Organisation", "OrganisationUnit")
 	}
 	return s
 }
@@ -32,7 +32,7 @@ func (s SqlOrganisationUnitStore) Save(organisationUnit *model.OrganisationUnit)
 		result := StoreResult{}
 		if len(organisationUnit.Id) > 0 {
 			result.Err = model.NewAppError("SqlOrganisationStore.Save",
-				"Must call update for exisiting organisation", "id="+ organisationUnit.Id)
+				"Must call update for exisiting organisation Unit", "id="+ organisationUnit.Id)
 			storeChannel <- result
 			close(storeChannel)
 			return
@@ -45,7 +45,7 @@ func (s SqlOrganisationUnitStore) Save(organisationUnit *model.OrganisationUnit)
 			if IsUniqueConstraintError(err.Error(), "Name", "organisation_unit_name_key") {
 				result.Err = model.NewAppError("SqlOrganisationUnitStore.Save", "A Organisation Unit with that domain already exists", "id="+ organisationUnit.Id+", "+err.Error())
 			} else {
-				result.Err = model.NewAppError("SqlOrganisationUnitStore.Save", "We couldn't save the team", "id="+ organisationUnit.Id+", "+err.Error())
+				result.Err = model.NewAppError("SqlOrganisationUnitStore.Save", "We couldn't save the organisation Unit", "id="+ organisationUnit.Id+", "+err.Error())
 			}
 		} else {
 			result.Data = organisationUnit
@@ -75,7 +75,8 @@ func (s SqlOrganisationUnitStore) Update(organisationUnit *model.OrganisationUni
 			oldOrganisationUnit := oldResult.(*model.OrganisationUnit)
 			organisationUnit.CreateAt = oldOrganisationUnit.CreateAt
 			organisationUnit.UpdateAt = model.GetMillis()
-			organisationUnit.UnitName = oldOrganisationUnit.UnitName
+			organisationUnit.OrganisationUnit = oldOrganisationUnit.OrganisationUnit
+			organisationUnit.Organisation = oldOrganisationUnit.Organisation
 
 			if count, err := s.GetMaster().Update(organisationUnit); err != nil {
 				result.Err = model.NewAppError("SqlOrganisationUnitStore.Update", "We encountered an error updating the organisation Unit", "id="+ organisationUnit.Id+", "+err.Error())
@@ -101,7 +102,7 @@ func (s SqlOrganisationUnitStore) GetByName(name string) StoreChannel {
 
 		organisationUnit := model.OrganisationUnit{}
 
-		if err := s.GetReplica().SelectOne(&organisationUnit, "SELECT * FROM OrganisationUnit WHERE Name = :Name", map[string]interface{}{"Name": name}); err != nil {
+		if err := s.GetReplica().SelectOne(&organisationUnit, "SELECT * FROM OrganisationUnit WHERE OrganisationUnit = :Name", map[string]interface{}{"Name": name}); err != nil {
 			result.Err = model.NewAppError("SqlOrganisationUnitStore.GetByName", "We couldn't find the existing organisation Unit", "name="+name+", "+err.Error())
 		}
 

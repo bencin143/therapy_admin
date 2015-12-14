@@ -30,8 +30,8 @@ func createOrganisationUnit(c *Context, w http.ResponseWriter, r *http.Request) 
 		c.SetInvalidParam("createOrganisationUnit", "organisationUnit")
 		return
 	}
-	if organisationUnit.OrganisationName == "" {
-		c.SetInvalidParam("createOrganisationUnit", "organisationUnit")
+	if organisationUnit.Organisation == "" {
+		c.SetInvalidParam("createOrganisationUnit", "organisation")
 		return
 	}
 

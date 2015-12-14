@@ -10,10 +10,8 @@ type OrganisationUnit struct {
 	CreateAt         int64  `json:"create_at"`
 	UpdateAt         int64  `json:"update_at"`
 	DeleteAt         int64  `json:"delete_at"`
-	OrganisationName string `json:"organisationName"`
-	OrganisationId 	 string `json:"organisationId"`
-	UnitName	     string `json:"unit_name"`
-	Email            string `json:"email"`
+	Organisation     string `json:"organisation"`
+	OrganisationUnit string `json:"organisation_unit"`
 }
 
 // ToJson convert a OrganisationUnit to a json string

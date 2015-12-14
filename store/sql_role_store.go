@@ -15,8 +15,10 @@ func NewSqlRoleStore(sqlStore *SqlStore) RoleStore {
 	for _, db := range sqlStore.GetAllConns() {
 		table := db.AddTableWithName(model.Role{}, "Role").SetKeys(false, "Id")
 		table.ColMap("Id").SetMaxSize(26)
-		table.ColMap("OrganisationName").SetMaxSize(64).SetUnique(true)
-		table.ColMap("RoleName").SetMaxSize(64).SetUnique(true)
+		table.ColMap("RoleName").SetMaxSize(64)
+		table.ColMap("UniversalRole").SetMaxSize(64)
+		table.ColMap("OrganisationUnit").SetMaxSize(64)
+		table.SetUniqueTogether("RoleName", "OrganisationUnit")
 	}
 	return s
 }
@@ -44,7 +46,7 @@ func (s SqlRoleStore) Save(role *model.Role) StoreChannel {
 			if IsUniqueConstraintError(err.Error(), "Name", "role_name") {
 				result.Err = model.NewAppError("SqlRoleStore.Save", "A Role with that domain already exists", "id="+ role.Id+", "+err.Error())
 			} else {
-				result.Err = model.NewAppError("SqlRoleStore.Save", "We couldn't save the team", "id="+ role.Id+", "+err.Error())
+				result.Err = model.NewAppError("SqlRoleStore.Save", "We couldn't save the role", "id="+ role.Id+", "+err.Error())
 			}
 		} else {
 			result.Data = role
@@ -100,7 +102,7 @@ func (s SqlRoleStore) GetRoles(name string) StoreChannel {
 
 		role := model.Role{}
 
-		if err := s.GetReplica().SelectOne(&role, "SELECT * FROM Role WHERE Name = :Name", map[string]interface{}{"Name": name}); err != nil {
+		if err := s.GetReplica().SelectOne(&role, "SELECT * FROM Role WHERE OrganisationUnit = :Name limit 1", map[string]interface{}{"Name": name}); err != nil {
 			result.Err = model.NewAppError("SqlOrganisationUnitStore.GetByName", "We couldn't find the existing organisation Unit", "name="+name+", "+err.Error())
 		}
 

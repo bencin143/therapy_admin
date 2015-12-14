@@ -25,7 +25,7 @@ func createOrganisation(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	organisation := model.OrganisationFromJson(r.Body)
 	if organisation == nil {
-		c.SetInvalidParam("createOrganisation", "organisation")
+		c.SetInvalidParam("createOrganisation", "name")
 		return
 	}
 

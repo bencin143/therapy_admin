@@ -27,10 +27,10 @@ func createRole(c *Context, w http.ResponseWriter, r *http.Request) {
 	l4g.Debug(" Role ", r.Body)
 
 	if role == nil {
-		c.SetInvalidParam("createRole", "rolet")
+		c.SetInvalidParam("createRole", "role")
 		return
 	}
-	if role.OrganisationName == "" {
+	if role.OrganisationUnit == "" {
 		c.SetInvalidParam("createOrganisationUnit", "organisationUnit")
 		return
 	}
@@ -52,7 +52,7 @@ func findRole(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if result := <-Srv.Store.Role().GetRoles(role.OrganisationName); result.Err != nil {
+	if result := <-Srv.Store.Role().GetRoles(role.OrganisationUnit); result.Err != nil {
 		w.Write([]byte(result.Err.ToJson()))
 		c.Err = result.Err
 		return
