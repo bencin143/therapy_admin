@@ -11,6 +11,7 @@ type Organisation struct {
 	UpdateAt         int64  `json:"update_at"`
 	DeleteAt         int64  `json:"delete_at"`
 	Name             string `json:"name"`
+	CreatedBy	 string `json:"createdBy"`
 	Email            string `json:"email"`
 }
 

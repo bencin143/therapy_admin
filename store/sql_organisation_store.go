@@ -17,6 +17,7 @@ func NewSqlOrganisationStore(sqlStore *SqlStore) OrganisationStore {
 		table.ColMap("Id").SetMaxSize(26)
 		table.ColMap("Name").SetMaxSize(64).SetUnique(true)
 		table.ColMap("Email").SetMaxSize(128)
+		table.ColMap("CreatedBy").SetMaxSize(128)
 	}
 	return s
 }
@@ -75,6 +76,7 @@ func (s SqlOrganisationStore) Update(organisation *model.Organisation) StoreChan
 			organisation.CreateAt = oldOrganisation.CreateAt
 			organisation.UpdateAt = model.GetMillis()
 			organisation.Name = oldOrganisation.Name
+			organisation.CreatedBy = oldOrganisation.CreatedBy
 
 			if count, err := s.GetMaster().Update(organisation); err != nil {
 				result.Err = model.NewAppError("SqlOrganisationStore.Update", "We encountered an error updating the organisation", "id="+ organisation.Id+", "+err.Error())

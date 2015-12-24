@@ -14,11 +14,9 @@ import (
 
 func InitOrganisation(r *mux.Router) {
 	l4g.Debug("Initializing Organisation api routes")
-
 	sr := r.PathPrefix("/organisation").Subrouter()
 	sr.Handle("/create", ApiAppHandler(createOrganisation)).Methods("POST")
 	sr.Handle("/findByName", ApiAppHandler(findOrganisationByName)).Methods("POST")
-
 }
 
 func createOrganisation(c *Context, w http.ResponseWriter, r *http.Request) {
