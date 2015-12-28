@@ -17,6 +17,7 @@ func InitOrganisation(r *mux.Router) {
 	sr := r.PathPrefix("/organisation").Subrouter()
 	sr.Handle("/create", ApiAppHandler(createOrganisation)).Methods("POST")
 	sr.Handle("/findByName", ApiAppHandler(findOrganisationByName)).Methods("POST")
+	sr.Handle("/track", ApiAppHandler(listOrganisation)).Methods("POST")
 }
 
 func createOrganisation(c *Context, w http.ResponseWriter, r *http.Request) {
@@ -52,4 +53,22 @@ func findOrganisationByName(c *Context, w http.ResponseWriter, r *http.Request) 
 		organisation = result.Data.(*model.Organisation)
 	}
 	w.Write([]byte(organisation.ToJson()))
+}
+
+func listOrganisation(c *Context, w http.ResponseWriter, r *http.Request) {
+
+	//var organisationUnits []*model.OrganisationUnit
+	organisation := model.OrganisationFromJson(r.Body)
+	if organisation == nil {
+		c.SetInvalidParam("listOrganisation", "organisation")
+		return
+	}
+
+	if result := <-Srv.Store.Organisation().GetCreatedBy(organisation.CreatedBy); result.Err != nil {
+		w.Write([]byte(result.Err.ToJson()))
+		c.Err = result.Err
+		return
+	} else {
+		w.Write([]byte(result.Data.(*model.Organisations).ToJson()))
+	}
 }

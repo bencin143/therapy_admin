@@ -186,6 +186,7 @@ type OrganisationStore interface  {
 	Save(organisation *model.Organisation) StoreChannel
 	Update(organisation *model.Organisation) StoreChannel
 	GetByName(organisationName string) StoreChannel
+	GetCreatedBy(createdBy string) StoreChannel
 }
 
 type OrganisationUnitStore interface  {
