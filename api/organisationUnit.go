@@ -77,11 +77,6 @@ func listOrganisationUnit(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = result.Err
 		return
 	} else {
-		/*l4g.Debug(" OrganisationUnits ", result)
-		l4g.Debug(" OrganisationUnits ", result.Data)
-		l4g.Debug(" OrganisationUnits ", result.Data.(*model.OrganisationUnits).ToJson())*/
 		w.Write([]byte(result.Data.(*model.OrganisationUnits).ToJson()))
 	}
-
-	//w.Write([]byte(result.Data))
 }

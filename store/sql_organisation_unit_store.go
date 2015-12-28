@@ -130,7 +130,6 @@ func (s SqlOrganisationUnitStore) GetCreatedBy(name string) StoreChannel {
 		}
 
 		result.Data = &organisationUnit
-
 		storeChannel <- result
 		close(storeChannel)
 	}()

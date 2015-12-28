@@ -347,6 +347,31 @@ func LoginByEmail(c *Context, w http.ResponseWriter, r *http.Request, email, nam
 	return nil
 }
 
+func LoginByUserName(c *Context, w http.ResponseWriter, r *http.Request, userName, teamName, password, deviceId string) *model.User {
+	var team *model.Team
+
+	if result := <-Srv.Store.Team().GetByName(teamName); result.Err != nil {
+		c.Err = result.Err
+		return nil
+	} else {
+		team = result.Data.(*model.Team)
+	}
+
+	if result := <-Srv.Store.User().GetByUsername(team.Id, userName); result.Err != nil {
+		c.Err = result.Err
+		return nil
+	} else {
+		user := result.Data.(*model.User)
+
+		if checkUserPassword(c, user, password) {
+			Login(c, w, r, user, deviceId)
+			return user
+		}
+	}
+
+	return nil
+}
+
 func checkUserPassword(c *Context, user *model.User, password string) bool {
 
 	if user.FailedAttempts >= utils.Cfg.ServiceSettings.MaximumLoginAttempts {
@@ -480,6 +505,8 @@ func login(c *Context, w http.ResponseWriter, r *http.Request) {
 	var user *model.User
 	if len(props["id"]) != 0 {
 		user = LoginById(c, w, r, props["id"], props["password"], props["device_id"])
+	} else if len(props["username"]) != 0 && len(props["name"]) != 0 {
+		user =LoginByUserName(c, w, r, props["username"], props["name"], props["password"], props["device_id"])
 	} else if len(props["email"]) != 0 && len(props["name"]) != 0 {
 		user = LoginByEmail(c, w, r, props["email"], props["name"], props["password"], props["device_id"])
 	} else {
