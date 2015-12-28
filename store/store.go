@@ -192,6 +192,7 @@ type OrganisationUnitStore interface  {
 	Save(organisationUnit *model.OrganisationUnit) StoreChannel
 	Update(organisationUnit *model.OrganisationUnit) StoreChannel
 	GetByName(organisationUnitName string) StoreChannel
+	GetCreatedBy(createdBy string) StoreChannel
 	//	Get() StoreChannel
 }
 

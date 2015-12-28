@@ -19,6 +19,7 @@ func InitOrganisationUnit(r *mux.Router) {
 	sr := r.PathPrefix("/organisationUnit").Subrouter()
 	sr.Handle("/create", ApiAppHandler(createOrganisationUnit)).Methods("POST")
 	sr.Handle("/findByName", ApiAppHandler(findOrganisationUnitByName)).Methods("POST")
+	sr.Handle("/track", ApiAppHandler(listOrganisationUnit)).Methods("POST")
 }
 
 func createOrganisationUnit(c *Context, w http.ResponseWriter, r *http.Request) {
@@ -60,4 +61,27 @@ func findOrganisationUnitByName(c *Context, w http.ResponseWriter, r *http.Reque
 		organisation = result.Data.(*model.Organisation)
 	}
 	w.Write([]byte(organisation.ToJson()))
+}
+
+func listOrganisationUnit(c *Context, w http.ResponseWriter, r *http.Request) {
+
+	//var organisationUnits []*model.OrganisationUnit
+	organisationUnit := model.OrganisationUnitFromJson(r.Body)
+	if organisationUnit == nil {
+		c.SetInvalidParam("listOrganisationUnit", "organisation")
+		return
+	}
+
+	if result := <-Srv.Store.OrganisationUnit().GetCreatedBy(organisationUnit.CreatedBy); result.Err != nil {
+		w.Write([]byte(result.Err.ToJson()))
+		c.Err = result.Err
+		return
+	} else {
+		/*l4g.Debug(" OrganisationUnits ", result)
+		l4g.Debug(" OrganisationUnits ", result.Data)
+		l4g.Debug(" OrganisationUnits ", result.Data.(*model.OrganisationUnits).ToJson())*/
+		w.Write([]byte(result.Data.(*model.OrganisationUnits).ToJson()))
+	}
+
+	//w.Write([]byte(result.Data))
 }
