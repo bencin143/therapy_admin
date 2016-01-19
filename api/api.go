@@ -50,6 +50,7 @@ func InitApi() {
 	InitOrganisation(r)
 	InitOrganisationUnit(r)
 	InitRole(r)
+	InitTabTemplate(r)
 
 	templatesDir := utils.FindDir("api/templates")
 	l4g.Debug("Parsing server templates at %v", templatesDir)

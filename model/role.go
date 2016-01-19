@@ -13,6 +13,7 @@ type Role struct {
 	RoleName	 string `json:"role_name"`
 	OrganisationUnit string `json:"organisationUnit"`
 	UniversalRole	 string `json:"universalRole"`
+	Template         string `json:"templateId"`
 }
 
 // ToJson convert a OrganisationUnit to a json string

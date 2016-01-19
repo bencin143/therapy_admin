@@ -52,6 +52,7 @@ type SqlStore struct {
 	organisation 		OrganisationStore
 	organisationUnit 	OrganisationUnitStore
 	role			RoleStore
+	tabTemplate		TabTemplateStore
 }
 
 func NewSqlStore() Store {
@@ -128,6 +129,7 @@ func NewSqlStore() Store {
 	sqlStore.organisation = NewSqlOrganisationStore(sqlStore)
 	sqlStore.organisationUnit = NewSqlOrganisationUnitStore(sqlStore)
 	sqlStore.role = NewSqlRoleStore(sqlStore)
+	sqlStore.tabTemplate = NewSqlTabTemplateStore(sqlStore)
 
 	err := sqlStore.master.CreateTablesIfNotExists()
 	if err != nil {
@@ -555,6 +557,13 @@ func (ss SqlStore) OrganisationUnit() OrganisationUnitStore {
 func (ss SqlStore) Role() RoleStore {
 	return ss.role
 }
+
+
+func (ss SqlStore) TabTemplate() TabTemplateStore {
+	return ss.tabTemplate
+}
+
+
 
 type mattermConverter struct{}
 
