@@ -130,6 +130,7 @@ func NewSqlStore() Store {
 	sqlStore.organisation = NewSqlOrganisationStore(sqlStore)
 	sqlStore.organisationUnit = NewSqlOrganisationUnitStore(sqlStore)
 	sqlStore.role = NewSqlRoleStore(sqlStore)
+	sqlStore.tab = NewSqlTabStore(sqlStore)
 	sqlStore.tabTemplate = NewSqlTabTemplateStore(sqlStore)
 
 	err := sqlStore.master.CreateTablesIfNotExists()

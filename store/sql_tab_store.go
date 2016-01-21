@@ -9,12 +9,12 @@ type SqlTabStore struct {
 	*SqlStore
 }
 
-func NewSqlTabStore(sqlStore *SqlStore) TabTemplateStore {
-	s := &SqlTabTemplateStore{sqlStore}
+func NewSqlTabStore(sqlStore *SqlStore) TabStore {
+	s := &SqlTabStore{sqlStore}
 
 	for _, db := range sqlStore.GetAllConns() {
 
-		table := db.AddTableWithName(model.TabTemplate{}, "Tab").SetKeys(false, "Id")
+		table := db.AddTableWithName(model.Tab{}, "Tab").SetKeys(false, "Id")
 		table.ColMap("Id").SetMaxSize(26)
 		table.ColMap("TabTemplate").SetMaxSize(256)
 		table.ColMap("RoleName").SetMaxSize(256)
