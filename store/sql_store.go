@@ -53,6 +53,7 @@ type SqlStore struct {
 	organisationUnit 	OrganisationUnitStore
 	role			RoleStore
 	tabTemplate		TabTemplateStore
+	tab			TabStore
 }
 
 func NewSqlStore() Store {
@@ -563,6 +564,9 @@ func (ss SqlStore) TabTemplate() TabTemplateStore {
 	return ss.tabTemplate
 }
 
+func (ss SqlStore) Tab() TabStore {
+	return ss.tab
+}
 
 
 type mattermConverter struct{}

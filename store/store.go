@@ -43,6 +43,7 @@ type Store interface {
 	OrganisationUnit() OrganisationUnitStore
 	Role() RoleStore
 	TabTemplate() TabTemplateStore
+	Tab() TabStore
 
 	MarkSystemRanUnitTests()
 	Close()
@@ -206,6 +207,14 @@ type RoleStore interface  {
 type TabTemplateStore interface {
 	Save(tabtemplate *model.TabTemplate) StoreChannel
 	Update(tabtemplate *model.TabTemplate) StoreChannel
+	GetByName(name string) StoreChannel
+	GetAll() StoreChannel
+}
+
+
+type TabStore interface {
+	Save(tab *model.Tab) StoreChannel
+	Update(tab *model.Tab) StoreChannel
 	GetByName(name string) StoreChannel
 	GetAll() StoreChannel
 }
