@@ -151,6 +151,8 @@ func NewSqlStore() Store {
 	sqlStore.organisation.(*SqlOrganisationStore).UpgradeSchemaIfNeeded()
 	sqlStore.organisationUnit.(*SqlOrganisationUnitStore).UpgradeSchemaIfNeeded()
 	sqlStore.role.(*SqlRoleStore).UpgradeSchemaIfNeeded()
+	sqlStore.tab.(*SqlTabStore).UpgradeSchemaIfNeeded()
+	sqlStore.tabTemplate.(*SqlTabTemplateStore).UpgradeSchemaIfNeeded()
 
 	sqlStore.team.(*SqlTeamStore).CreateIndexesIfNotExists()
 	sqlStore.channel.(*SqlChannelStore).CreateIndexesIfNotExists()
@@ -163,6 +165,7 @@ func NewSqlStore() Store {
 	sqlStore.webhook.(*SqlWebhookStore).CreateIndexesIfNotExists()
 	sqlStore.preference.(*SqlPreferenceStore).CreateIndexesIfNotExists()
 //	sqlStore.organisation.(*SqlOrganisationStore).createIndexIfNotExists()
+
 
 	if model.IsPreviousVersion(schemaVersion) || isSchemaVersion07 || isSchemaVersion10 {
 		sqlStore.system.Update(&model.System{Name: "Version", Value: model.CurrentVersion})

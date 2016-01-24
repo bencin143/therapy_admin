@@ -11,9 +11,10 @@ type Role struct {
 	UpdateAt         int64  `json:"update_at"`
 	DeleteAt         int64  `json:"delete_at"`
 	RoleName	 string `json:"role_name"`
+	OrganisationName string `json:"organisation"`
 	OrganisationUnit string `json:"organisationUnit"`
 	UniversalRole	 string `json:"universalRole"`
-	Template         string `json:"templateId"`
+	Tab     	 string `json:"tabId"`
 }
 
 // ToJson convert a OrganisationUnit to a json string

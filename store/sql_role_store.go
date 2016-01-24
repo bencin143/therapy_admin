@@ -18,9 +18,13 @@ func NewSqlRoleStore(sqlStore *SqlStore) RoleStore {
 		table.ColMap("RoleName").SetMaxSize(64)
 		table.ColMap("UniversalRole").SetMaxSize(64)
 		table.ColMap("OrganisationUnit").SetMaxSize(64)
-		table.ColMap("Template").SetMaxSize(64)
-		table.SetUniqueTogether("RoleName", "Template")
-		table.SetUniqueTogether("RoleName", "OrganisationUnit")
+		table.ColMap("Tab").SetMaxSize(64)
+		table.ColMap("Organisation").SetMaxSize(64)
+		table.SetUniqueTogether("RoleName","Organisation","OrganisationUnit")
+
+		// table.SetUniqueTogether("RoleName", "OrganisationUnit")
+		// table.SetUniqueTogether("RoleName", "Template")
+		// table.SetUniqueTogether("RoleName", "OrganisationUnit")
 	}
 	return s
 }
@@ -53,11 +57,9 @@ func (s SqlRoleStore) Save(role *model.Role) StoreChannel {
 		} else {
 			result.Data = role
 		}
-
 		storeChannel <- result
 		close(storeChannel)
 	}()
-
 	return storeChannel
 }
 
