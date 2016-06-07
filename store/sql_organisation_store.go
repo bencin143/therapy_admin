@@ -102,7 +102,7 @@ func (s SqlOrganisationStore) GetByName(name string) StoreChannel {
 
 		organisation := model.Organisation{}
 
-		if err := s.GetReplica().SelectOne(&organisation, "SELECT * FROM Organisation WHERE Name = :Name", map[string]interface{}{"Name": name}); err != nil {
+		if err := s.GetReplica().SelectOne(&organisation, "SELECT * FROM Organisation WHERE Name = :Name order by CreateAt desc", map[string]interface{}{"Name": name}); err != nil {
 			result.Err = model.NewAppError("SqlOrganisationStore.GetByName", "We couldn't find the existing organisation", "name="+name+", "+err.Error())
 		}
 

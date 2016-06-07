@@ -17,6 +17,7 @@ func NewSqlRoleStore(sqlStore *SqlStore) RoleStore {
 		table.ColMap("Id").SetMaxSize(26)
 		table.ColMap("RoleName").SetMaxSize(64)
 		table.ColMap("UniversalRole").SetMaxSize(64)
+		table.ColMap("OrganisationName").SetMaxSize(64)
 		table.ColMap("OrganisationUnit").SetMaxSize(64)
 		table.ColMap("Tab").SetMaxSize(64)
 		//table.ColMap("Organisation").SetMaxSize(64)
