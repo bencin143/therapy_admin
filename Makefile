@@ -73,6 +73,7 @@ travis:
 	@$(GO) test $(GOFLAGS) -run=$(TESTS) -test.v -test.timeout=120s ./web || exit 1
 
 	mkdir -p $(DIST_PATH)/bin
+	#cp $(GOPATH)/bin/platform $(DIST_PATH)/bin
 	cp $(GOPATH)/bin/platform $(DIST_PATH)/bin
 
 	cp -RL config $(DIST_PATH)/config

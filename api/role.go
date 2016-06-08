@@ -30,10 +30,12 @@ func createRole(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.SetInvalidParam("createRole", "role")
 		return
 	}
+	/*
+	this constraint  will  be bypassed
 	if role.OrganisationUnit == "" {
 		c.SetInvalidParam("createOrganisationUnit", "organisationUnit")
 		return
-	}
+	}*/
 
 	if result := <-Srv.Store.Role().Save(role); result.Err != nil {
 		c.Err = result.Err

@@ -21,6 +21,7 @@ func InitChannel(r *mux.Router) {
 	sr.Handle("/counts", ApiUserRequiredActivity(getChannelCounts, false)).Methods("GET")
 	sr.Handle("/create", ApiUserRequired(createChannel)).Methods("POST")
 	sr.Handle("/create_direct", ApiUserRequired(createDirectChannel)).Methods("POST")
+	sr.Handle("/create_public_channel", ApiUserRequired(createPublicChannel)).Methods("POST")
 	sr.Handle("/update", ApiUserRequired(updateChannel)).Methods("POST")
 	sr.Handle("/update_header", ApiUserRequired(updateChannelHeader)).Methods("POST")
 	sr.Handle("/update_purpose", ApiUserRequired(updateChannelPurpose)).Methods("POST")
@@ -35,6 +36,7 @@ func InitChannel(r *mux.Router) {
 	sr.Handle("/{id:[A-Za-z0-9]+}/update_last_viewed_at", ApiUserRequired(updateLastViewedAt)).Methods("POST")
 
 }
+
 
 func createChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 
@@ -166,6 +168,38 @@ func CreateDefaultChannels(c *Context, teamId string) ([]*model.Channel, *model.
 	channels := []*model.Channel{townSquare, offTopic}
 	return channels, nil
 }
+
+func createPublicChannel(c *Context,w http.ResponseWriter, r *http.Request){
+	channel :=model.ChannelFromJson(r.Body)
+	channel.Type = model.CHANNEL_OPEN
+	if channel == nil {
+		c.SetInvalidParam("createChannel","channel")
+		return
+	}
+	if !c.HasPermissionsToTeam(channel.TeamId, "createChannel") {
+		return
+	}
+	
+	if channel.Type == model.CHANNEL_DIRECT {
+		c.Err = model.NewAppError("createDirectChannel", "Must use createDirectChannel api service for direct message channel creation", "")
+		return
+	}
+
+	if strings.Index(channel.Name, "__") > 0 {
+		c.Err = model.NewAppError("createDirectChannel", "Invalid character '__' in channel name for non-direct channel", "")
+		return
+	}
+	
+	//channelName := &model.Channel{DisplayName: channel.Name, Name: strings.ToLower(channel.Name), Type: model.CHANNEL_OPEN, TeamId: channel.TeamId}
+	if sc, err := CreateChannel(c, channel, false); err != nil {
+		c.Err = err
+		return
+	} else {
+		w.Write([]byte(sc.ToJson()))
+	}
+
+}
+
 
 func updateChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 
