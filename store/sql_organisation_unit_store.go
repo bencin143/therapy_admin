@@ -104,7 +104,7 @@ func (s SqlOrganisationUnitStore) GetByName(name string) StoreChannel {
 
 		organisationUnit := model.OrganisationUnit{}
 
-		if err := s.GetReplica().SelectOne(&organisationUnit, "SELECT * FROM OrganisationUnit WHERE OrganisationUnit = :Name and DeleteAt = 0", map[string]interface{}{"Name": name}); err != nil {
+		if err := s.GetReplica().SelectOne(&organisationUnit, "SELECT * FROM OrganisationUnit WHERE OrganisationUnit = :Name and DeleteAt = 0 order by CreateAt desc", map[string]interface{}{"Name": name}); err != nil {
 			result.Err = model.NewAppError("SqlOrganisationUnitStore.GetByName", "We couldn't find the existing organisation Unit", "name="+name+", "+err.Error())
 		}
 

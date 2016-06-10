@@ -11,6 +11,7 @@ type Role struct {
 	UpdateAt         int64  `json:"update_at"`
 	DeleteAt         int64  `json:"delete_at"`
 	RoleName	 string `json:"role_name"`
+	RoleType		 string `json:"role_type"`
 	OrganisationName string `json:"organisation"`
 	OrganisationUnit string `json:"organisationUnit"`
 	UniversalRole	 string `json:"universalRole"`

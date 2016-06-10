@@ -122,7 +122,7 @@ func (s SqlOrganisationStore) GetCreatedBy(name string) StoreChannel {
 		result := StoreResult{}
 		var organisations model.Organisations
 
-		if _, err := s.GetReplica().Select(&organisations, "SELECT * FROM Organisation WHERE CreatedBy = :CreatedBy", map[string]interface{}{"CreatedBy": name}); err != nil {
+		if _, err := s.GetReplica().Select(&organisations, "SELECT * FROM Organisation WHERE CreatedBy = :CreatedBy order by CreateAt desc", map[string]interface{}{"CreatedBy": name}); err != nil {
 			result.Err = model.NewAppError("SqlOrganisationStore.GetByName", "We couldn't find any existing organisation created By User", "name="+name+", "+err.Error())
 		}
 
