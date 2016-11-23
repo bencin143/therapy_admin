@@ -1,7 +1,8 @@
 <?php
-	include('connect_db.php');
-	include('tabgen_php_functions.php');// all the function/ methodes are in this php file
-$token = get_token_from_header();//for security point of view
+/*code for finding a user by name*/
+include('connect_db.php');
+include('tabgen_php_functions.php');// all the function/ methodes are in this php file
+$token = get_token_from_header();
 if($token==null){
 	echo json_encode(array("status"=>false,"message"=>"Your request is unauthorized."));
 }
@@ -14,7 +15,7 @@ else{
 					where Users.Id=User_OU_Mapping.user_id
 					and User_OU_Mapping.OU_id=OrganisationUnit.Id
 					and Users.DeleteAt=0
-					and Username like '%$user_name%'";
+					and Username like '%$user_name%' order by Username";
 			$res = $conn->query($query);
 			$output=null;
 			if($res){

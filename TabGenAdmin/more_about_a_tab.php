@@ -7,10 +7,9 @@
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
-	<!--<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">-->
 	<!--Toast package-->
 	<link href="css/toast.css" rel="stylesheet" media="screen">
-	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<!--<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>-->
 	<script type="text/javascript" src="js/toast.js"></script>
 	<!-- ********************************************** -->
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -25,7 +24,7 @@
 	<link rel="stylesheet" type="text/css" href="css/my_custom_style.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
-	<!-- This is what you need for sweet alert -->
+	<!-- This is for sweet alert -->
 	<script src="dist/sweetalert-dev.js"></script>
 	<link rel="stylesheet" href="dist/sweetalert.css">
 	<!--.......................-->
@@ -36,7 +35,7 @@
 	<script src="homepage.js"></script>
 	<script type="text/JavaScript">
 		var js_session = sessionStorage.getItem('user_details');
-		var output;
+		var output;//stores list of articles
 		var template_type;
 		if(js_session=="null"){
 			window.location.assign("index.html");
@@ -50,49 +49,26 @@
 			});
 		});
 		function toggle(){
-			//alert("Hi");
 			$("#wrapper").toggleClass("toggled");
 		}
-		function getSession(){
+		function getSession(){//checking user session
 			setInterval(
-				function(){
-						//alert("Hello"); 
+				function(){ 
 						$.ajax({
 						url: "getUserSession.php",
 						type: "GET",
 						success:function(data){
 							if(data.trim()=="null"){
-								//user_session=null;
-								window.location.assign("index.html");
-							}
-							else{
-								//user_session=JSON.parse(data);
+								window.location.assign("index.html");//go for login again
 							}
 						},
 						error:function(error_data,y,z){
-							//user_session=null;
-							//alert(error_data+" "+y+" "+z);
+							
 						}
 					});
 				}, 30000);	
 		}
 		
-		function test_token(){
-			var js_session = sessionStorage.getItem('user_details');
-			var user_session = JSON.parse(js_session);
-			//alert(js_session);
-			$.ajax({
-				url: "test.php",
-				type: "POST",
-				beforeSend: function (xhr) {			
-					//xhr.setRequestHeader('X-AUTHENTICATION-TOKEN', user_session.token);
-					xhr.setRequestHeader('Authorization',user_session.token);
-				},
-				success: function(resp){
-					alert(resp);
-				}
-			});
-		}
 	</script>
 	<body onload='getSession();'>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
@@ -120,33 +96,26 @@
 						
 					?> <span class="sr-only">(current)</span></a>
 				</li>
-				<li>
-					<!--
-					<a>
-						<button class='btn' onclick="test_token();">
-							<span class="glyphicon glyphicon-repeat"></span> Get Token
-						</button>
-					</a>-->
-					
-				</li>
+				
 				<script type="text/JavaScript">
 					var before_timestamp;//for pagination
 					var after_timestamp;//for pagination
-					var indicator;
+					var indicator;//an index of an article
 					var image_path=[];
 					var files_path=[];
 					var queryString = new Array();
+					
+					/*getting tab id from the url*/
 					if (window.location.search.split('?').length > 1) {
 						var params = window.location.search.split('?')[1].split('&');
 						for (var i = 0; i < params.length; i++) {
 							var key = params[i].split('=')[0];
 							var value = decodeURIComponent(params[i].split('=')[1]);
 							queryString[key] = value;
-							//alert(key);
 						}
 					}	
 					var tab_id=queryString['tab_id'];
-					getArticles(tab_id,"first_time_load");
+					getArticles(tab_id,"first_time_load");//getting the first 10 articles for the first time load
 					
 					function getFiles(i){
 						var file_list=files_path[i];
@@ -165,7 +134,7 @@
 												extractFileName(files)+"</a>"+
 												"</div>";
 						}
-						files_layout=j>0?"<div><h5>Attached files:</h5></div>"+files_layout:"";
+						files_layout=j>0?"<div style='padding-left:5px;padding-right:5px'><h5>Attached files:</h5></div>"+files_layout:"";
 						return files_layout;
 					}
 					/*js function to delete a file*/
@@ -187,7 +156,10 @@
 								$.ajax({
 									url: "delete_file.php",
 									type: "POST",
-									data: {"user_id":user_session.id,"file_id":file_id,"article_id":article_id},
+									data: {"file_id":file_id,"article_id":article_id},
+									beforeSend: function (xhr) {
+										xhr.setRequestHeader('Authorization',user_session.token);
+									},
 									success: function(resp){
 										var json_resp = JSON.parse(resp);
 										if(json_resp.status==true){
@@ -210,8 +182,9 @@
 						});	
 					}
 					
+					/*getting list of articles*/
 					function getArticles(tab_id,loading_mode){
-						//alert(tab_id);
+						
 						var data;
 						if(loading_mode=="first_time_load"){
 							data="tab_id="+tab_id+"&loading_mode="+loading_mode;
@@ -227,7 +200,6 @@
 							type: "GET",
 							beforeSend: function (xhr) {
 								xhr.setRequestHeader('Authorization',user_session.token);
-								//xhr.setRequestHeader('Content-Type', 'application/json');
 							},
 							success: function(resp){
 								var result = JSON.parse(resp);
@@ -240,21 +212,17 @@
 									if(output==null){
 										if(loading_mode=="first_time_load"){
 											document.getElementById("left_column").innerHTML="<br/><center>"+
-											"<img class='img-circle' src='img/empty_article_box.jpg' alt='No Article'"+
-											" height='50%' width='60%'/>"+
 											"<br/><div class='well'>No article found, create a new one.</div></center>";
 										}
 										else if(loading_mode=="before"){
-											//do nothing
 											swal("No more article!");
 										}
 										else if(loading_mode=="after"){
 											//do nothing
-											//swal("No more news article!");
 										}
 										return false;
 									}
-									//var article_layout="";
+									
 									var article_left="";
 									var article_right="";
 									for(var i=0;i<output.length;i++){
@@ -297,16 +265,7 @@
 													"</label>"+
 												"</div>";
 										}
-										
-										/*		//button for deleting article
-													"<button type='button' style='float:right;'"+ 
-														"onclick='deleteArticle(\""+i+"\");'"+
-														"class='close' aria-label='Close' id='deleteArticle"+i+"'>"+
-														"<span class='glyphicon glyphicon-remove'></span>"+
-													"</button>"+
-													"<div><input type='hidden' id='edit_text"+i+
-														"' value='"+textual_content+"'/></div>"+
-													*/
+
 										var created_at = new Date(output[i].CreateAt);	
 										/*left and right adjustment*/		
 										if(i%2==0){
@@ -316,15 +275,14 @@
 													output[i].Name+
 													"<input type='hidden' id='article_id"+i+"' value='"+output[i].Id+"'/>"+	
 												"</div>"+
-												"<div style='height:70%;padding:10px'>"+
+												"<div>"+
 													"<div id='image_content"+i+"'>"+image_layout+"</div><br/>"+
-													"<div id='textual_content"+i+"'>"+output[i].Textual_content+
+													"<div class='textual_content' id='textual_content"+i+"'>"+output[i].Textual_content+
 														"<button class='close' onclick='editArticle(\""+i+"\");'>"+
 														"<span class='glyphicon glyphicon-pencil'></span></button>"+
 													"</div>"+
 													"<br/>"+
-													"<div style='width:98%;overflow:hidden;overflow-x:auto' "+
-														"id='link_content"+i+"'>"+link_layout+"</div>"+
+													"<div id='link_content"+i+"'>"+link_layout+"</div><br/>"+
 													"<div style='width:98%;overflow:hidden;overflow-x:auto' "+
 														"id='files_content"+i+"'>"+getFiles(i)+"</div>"+
 													"<div id='file_attachment_layout"+i+"'></div>"+	
@@ -347,15 +305,14 @@
 													output[i].Name+
 													"<input type='hidden' id='article_id"+i+"' value='"+output[i].Id+"'/>"+	
 												"</div>"+
-												"<div style='height:70%;padding:10px'>"+
+												"<div>"+
 													"<div id='image_content"+i+"'>"+image_layout+"</div><br/>"+
-													"<div id='textual_content"+i+"'>"+output[i].Textual_content+
+													"<div class='textual_content' id='textual_content"+i+"'>"+output[i].Textual_content+
 														"<button class='close' onclick='editArticle(\""+i+"\");'>"+
 														"<span class='glyphicon glyphicon-pencil'></span></button>"+
 													"</div>"+
 													"<br/>"+
-													"<div style='width:98%;overflow:hidden;overflow-x:auto' "+
-														"id='link_content"+i+"'>"+link_layout+"</div>"+
+													"<div id='link_content"+i+"'>"+link_layout+"</div><br/>"+
 													"<div style='width:98%;overflow:hidden;overflow-x:auto' "+
 														"id='files_content"+i+"'>"+getFiles(i)+"</div>"+
 													"<div id='file_attachment_layout"+i+"'></div>"+	
@@ -369,9 +326,8 @@
 												"</div>"+
 											"</div>";
 											document.getElementById("right_column").innerHTML=article_right;
-										}
-										//document.getElementById("tab_contents").innerHTML=article_layout;										
-										refreshFileLayout(i);									
+										}										
+										refreshFileLayout(i);//refreshing list of files									
 									}
 									before_timestamp=output[output.length-1].CreateAt;
 									after_timestamp=output[0].CreateAt;
@@ -387,6 +343,7 @@
 						});
 					}
 					
+					/*function to activate or deactivate article, deactivated articles will not be seen on apps*/
 					function activateOrDeactivateArticle(i){
 						var article_id = document.getElementById("article_id"+i).value;
 						var status = document.getElementById("myonoffswitch"+i).checked;
@@ -481,9 +438,8 @@
 				<div id="left_column" class="column"></div>	
 				<div id="right_column" class="column"></div>
 				<script type='text/JavaScript'>
-					//youtube_parser("https://youtu.be/kGIftVM8b1o?t=14");
 					
-					
+					/*edit link layout*/
 					function editLink(i,article_link){
 						indicator=i;
 						var article_id = document.getElementById("article_id"+i).value;
@@ -498,6 +454,37 @@
 						document.getElementById("article_ID").value=article_id;
 						document.getElementById("editLinkResponse").innerHTML="";
 					}
+					
+					/*function to remove link of a news article*/
+					function remove_link(i){
+						var article_id = output[i].Id;
+						$.ajax({
+							url: "update_article.php",
+							type:"POST",
+							data:{"article_id":article_id,"Links":"null"},
+							beforeSend: function (xhr) {
+								xhr.setRequestHeader('Authorization',user_session.token);
+							},
+							success: function(resp){	
+								var json_resp = JSON.parse(resp);
+								if(json_resp.status==true){
+									swal("Link removed", "Link has been removed", "success");
+									output[i].Links="";
+									$("#link_content"+i).html(get_link(i));
+									document.getElementById("btn_group"+i).innerHTML=get_button_layout(i);
+								}
+								else{
+									swal("Update Failed!", json_resp.message, "error");
+								}
+							},
+							error: function(x,y,z){
+								swal(z+"!", "Request could not be fulfilled due to server error or "+
+											"requested resource is not found or not working well.", "error");
+							}
+						});
+					}
+					
+					/*function to get link of an article if exists*/
 					function get_link(i){
 						if(template_type=="CME Template"){
 								return "";
@@ -505,27 +492,31 @@
 						else{
 							var Link=output[i].Links;
 							var link_layout="";
-							if(Link.trim()==0){
+							if(Link.trim()==0 || Link==null){
 								link_layout="";
 							}
 							else{
 								if(youtube_parser(Link)!=null){
 									var video_id = youtube_parser(Link);
 									link_layout=""+
-									"<center><iframe height='310' width='460' allowfullscreen='true'"+
+									"<div class='videoWrapper'><iframe allowfullscreen='true'"+
 										" src='https://www.youtube.com/embed/"+video_id+"?autoplay=0'>"+
-									"</iframe></center>";
+									"</iframe></div>"+
+									"<div style='padding:5px;'><button class='btn-remove'"+
+									" onclick='remove_link(\""+i+"\");'>Remove Link</button></div><br/>";
+									
 								}
 								else{
-									link_layout="<br/><a href='"+Link+"' target='_blank'>"+Link+"</a><br/>";
-									/*"<center><div class='preview_link'><iframe height='500' width='460'"+
-									" src='"+Link+"'></iframe></div></center>";*/
+									link_layout="<br/><div class='link_bg'>"+
+									"<a href='"+Link+"' target='_blank'>"+Link+"</a>"+
+									"&nbsp;<button class='close' onclick='remove_link(\""+i+"\");'>&times;</button>"+
+									"</div><br/>";
 								}				
 							}
 							return link_layout;
 						}
 					}
-					
+					/*button layout*/
 					function get_button_layout(i){
 						var btn_layout="";
 						if(template_type=="CME Template"){
@@ -546,8 +537,10 @@
 						}
 						return btn_layout;
 					}
+					
+					/*function to update or enter link or an article*/
 					function edit_link_done(){
-						//alert(indicator);
+						
 						var article_id = document.getElementById("article_ID").value;
 						var new_link=document.getElementById("article_link").value;
 						var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
@@ -583,35 +576,33 @@
 							}
 						});	
 					}
-					function edit_link_cancel(){
-						
-					}
+					
+					/*setting a layout for editing article content*/
 					function editArticle(i){
-						var content = output[i].Textual_content;//document.getElementById("edit_text"+i).value;
-						//content = content.replace("%","'");
-						//alert(content);
+						var content = output[i].Textual_content;
+						
 						document.getElementById("textual_content"+i).innerHTML="<div class='div_bg'>"+
-							"<div class=''><label for='edited_text"+i+"'>Edit the content:</label>"+
+							"<div class=''>"+
 							"<textarea class='form-control' rows='10' cols='50' id='edited_text"+i+"'>"+content+"</textarea>"+
-							"</div></div>"+
+							"</div></div><br/>"+
 							"<div class='' style='float:right'><input type='button' value='CANCEL' class='btn' "+
 								"onclick='cancel_edit(\""+i+"\");'/>&nbsp;"+
-							"<input type='button' value='DONE' class='btn' onclick='done_edit(\""+i+"\");'/></div><br/><br/>";
+							"<input type='button' value='DONE' class='btn' onclick='done_edit(\""+i+"\");'/></div><br/>";
 					}
-					
+					/*edit cancellation function*/
 					function cancel_edit(i){
-						//alert(i);
-						var content = output[i].Textual_content;//document.getElementById("edit_text"+i).value;
-						//content = content.replace("%","'");
+						
+						var content = output[i].Textual_content;
+						
 						document.getElementById("textual_content"+i).innerHTML=content+
 							"<button class='close' onclick='editArticle(\""+i+"\");'>"+
 								"<span class='glyphicon glyphicon-pencil'></span></button>";
 					}
-					
+					/*saving the new article content in server*/
 					function done_edit(i){
-						//alert(i);
+						
 						var content = document.getElementById("edited_text"+i).value;
-						//content = content.replace("%","'");
+						
 						var article_id = document.getElementById("article_id"+i).value;
 						$.ajax({
 							url: "update_article.php",
@@ -627,7 +618,6 @@
 									document.getElementById("textual_content"+i).innerHTML=content+
 										"<button class='close' onclick='editArticle(\""+i+"\");'>"+
 											"<span class='glyphicon glyphicon-pencil'></span></button>";
-									//document.getElementById("edit_text"+i).value=content;
 								}
 								else{
 									alert(resp_json.message);
@@ -640,10 +630,10 @@
 						});
 						
 					}
-					
+					/*This will create a new article*/
 					function createArticle(){
 						var tab_id = queryString['tab_id'];
-						//alert("Tab Id: "+tab_id);
+						
 						var name = document.getElementById("title").value;
 						var textual_content = document.getElementById("textual_content").value;
 						var link_site = (template_type=="CME Template")?"":document.getElementById("link").value;
@@ -691,11 +681,11 @@
 						}
 						return false;
 					}
-					/*js for uploading any file*/
+					/*js for uploading any file for an article*/
 					function attachFile(i){
 						var article_id = document.getElementById("article_id"+i).value;
 						var file_upload_layout=""+
-							"<div style='padding-right:20px'>"+
+							"<div style='padding-left:5px;padding-right:10px'>"+
 								"<form id='uploadFileForm"+i+"' action='upload.php' method='post'>"+
 									"<div id='FileAttachtargetLayer"+i+"'></div>"+
 									"<button type='button' class='close' "+
@@ -719,11 +709,12 @@
 								"</center>"+
 							"</div>";
 						document.getElementById("file_attachment_layout"+i).innerHTML=file_upload_layout;
-						//document.getElementById("files_content"+i).innerHTML=file_upload_layout;
+						
 						$("#uploadFileForm"+i).submit(function(e) {	
 							var path = $("#userFile"+i).val();	
 							var path_length = $('#userFile'+i).val().trim().length;
-							
+							var file_input = document.getElementById("userFile"+i);
+							var file = file_input.files[0];
 							if(path==null || path_length==0){
 								$("#file_attachment_layout"+i).html("<center><br/><div class=''>"+
 									"No file has been selected. Please select one."+
@@ -742,11 +733,22 @@
 									"</div>");
 								return false;
 							}
+							else if(file.size>1024*1024*20){
+								$("#file_attachment_layout"+i).html("<br/><div class='isa_warning'>"+
+									"<p>File size must not exceed 20 MB.</p>"+
+									"<center><button type='button' class='btn' "+
+									"onclick='attachFile(\""+i+"\");'>OK</button></center>"+
+									"</div>");
+								return false;
+							}
 							else{
 								e.preventDefault();
 								$("#file_loader-icon"+i).show();
 								$("#file_progress-div"+i).show();
-								$(this).ajaxSubmit({ 
+								$(this).ajaxSubmit({
+									beforeSend: function (xhr) {
+										xhr.setRequestHeader('Authorization',user_session.token);
+									}, 
 									beforeSubmit: function() {
 									  $("#file_progress-bar"+i).width('0%');
 									},
@@ -755,7 +757,6 @@
 										$("#file_progress-bar"+i).html('<div id="file_progress-status'+i+'">' + percentComplete +' %</div>');
 									},
 									success:function (resp){
-										//alert(resp);
 										$("#file_loader-icon"+i).hide();
 										var json_resp = JSON.parse(resp);
 										if(json_resp.status==true){
@@ -763,7 +764,7 @@
 											refreshFileLayout(i);
 										}
 										else{
-											$("#file_attachment_layout"+i).html("<center><br/><div class=''>"+
+											$("#file_attachment_layout"+i).html("<center><br/><div class='isa_error'>"+
 												json_resp.message+
 												"<button type='button' class='close' "+
 													"onclick='attachFile(\""+i+"\");'>&times;</button>"+
@@ -777,7 +778,7 @@
 						});
 					}
 										
-					/*js for uploading image file*/
+					/*js for uploading image file for an article*/
 					function uploadImage(i){
 						var article_id = document.getElementById("article_id"+i).value;
 						
@@ -831,6 +832,9 @@
 								$("#progress-div"+i).show();
 								$(this).ajaxSubmit({
 									url: "upload.php", 
+									beforeSend: function (xhr) {
+										xhr.setRequestHeader('Authorization',user_session.token);
+									},
 									beforeSubmit: function() {
 									  $("#progress-bar"+i).width('0%');
 									},
@@ -858,7 +862,7 @@
 					
 					function closeImageUpload(i){
 						var image = image_path[i];
-						//alert(image);
+						
 						if(image==null || image=="") {
 							document.getElementById("image_content"+i).innerHTML="";	
 						}
@@ -870,56 +874,13 @@
 					function closeFileUpload(i){
 						document.getElementById("file_attachment_layout"+i).innerHTML="";
 					}
-					
+					/*function for refreshing list of files*/
 					function refreshFileLayout(i){
 						document.getElementById("files_content"+i).innerHTML=getFiles(i);
 						document.getElementById("file_attachment_layout"+i).innerHTML="";
 					}
-					function deleteArticle(i){
-						var article_id = document.getElementById("article_id"+i).value;
-						swal({   
-							title: "Are you sure?", 
-							text: "Once it is deleted, you will not be able to recover it!",   
-							type: "warning",   
-							showCancelButton: true,   
-							confirmButtonColor: "#DD6B55",   
-							confirmButtonText: "DONE",   
-							cancelButtonText: "CANCEL",   
-							closeOnConfirm: false,   
-							closeOnCancel: false 
-						}, 
-						function(isConfirm){   
-							if (isConfirm) {     
-								$.ajax({
-									type: "POST",
-									url: "deleteArticle.php",
-									data: "article_id="+article_id,
-									success:function(resp){
-										var json_resp=JSON.parse(resp);
-										if(json_resp.status==true){
-											swal("Deleted!", json_resp.message, "success"); 
-											getArticles(tab_id);
-											//Toast.success(json_resp.message, ' ', {displayDuration: 3000});
-										}
-										else{
-											swal("Failed!", json_resp.message, "error");
-											//Toast.error(json_resp.message, ' ');
-										}
-									}
-								});  
-							} else {     
-								//swal(" ", "Your article is safe now.", "error"); 
-								swal({   
-									title: "Deletion Cancelled!",  
-									text: "Your article is safe now.",   
-									timer: 1000,   
-									showConfirmButton: false 
-								});  
-								//Toast.success("Your article is not deleted, it is safe now.", ' ', {displayDuration: 3000});
-							} 
-						});
-					}
 					
+					/*create article form reset*/				
 					function resetArticle(){
 						document.getElementById("create_article_form").reset();
 						document.getElementById("createArticleResp").innerHTML="";
@@ -947,32 +908,10 @@
         <script>
 		/* jquery.form.min.js */
 		(function(e){"use strict";if(typeof define==="function"&&define.amd){define(["jquery"],e)}else{e(typeof jQuery!="undefined"?jQuery:window.Zepto)}})(function(e){"use strict";function r(t){var n=t.data;if(!t.isDefaultPrevented()){t.preventDefault();e(t.target).ajaxSubmit(n)}}function i(t){var n=t.target;var r=e(n);if(!r.is("[type=submit],[type=image]")){var i=r.closest("[type=submit]");if(i.length===0){return}n=i[0]}var s=this;s.clk=n;if(n.type=="image"){if(t.offsetX!==undefined){s.clk_x=t.offsetX;s.clk_y=t.offsetY}else if(typeof e.fn.offset=="function"){var o=r.offset();s.clk_x=t.pageX-o.left;s.clk_y=t.pageY-o.top}else{s.clk_x=t.pageX-n.offsetLeft;s.clk_y=t.pageY-n.offsetTop}}setTimeout(function(){s.clk=s.clk_x=s.clk_y=null},100)}function s(){if(!e.fn.ajaxSubmit.debug){return}var t="[jquery.form] "+Array.prototype.join.call(arguments,"");if(window.console&&window.console.log){window.console.log(t)}else if(window.opera&&window.opera.postError){window.opera.postError(t)}}var t={};t.fileapi=e("<input type='file'/>").get(0).files!==undefined;t.formdata=window.FormData!==undefined;var n=!!e.fn.prop;e.fn.attr2=function(){if(!n){return this.attr.apply(this,arguments)}var e=this.prop.apply(this,arguments);if(e&&e.jquery||typeof e==="string"){return e}return this.attr.apply(this,arguments)};e.fn.ajaxSubmit=function(r){function k(t){var n=e.param(t,r.traditional).split("&");var i=n.length;var s=[];var o,u;for(o=0;o<i;o++){n[o]=n[o].replace(/\+/g," ");u=n[o].split("=");s.push([decodeURIComponent(u[0]),decodeURIComponent(u[1])])}return s}function L(t){var n=new FormData;for(var s=0;s<t.length;s++){n.append(t[s].name,t[s].value)}if(r.extraData){var o=k(r.extraData);for(s=0;s<o.length;s++){if(o[s]){n.append(o[s][0],o[s][1])}}}r.data=null;var u=e.extend(true,{},e.ajaxSettings,r,{contentType:false,processData:false,cache:false,type:i||"POST"});if(r.uploadProgress){u.xhr=function(){var t=e.ajaxSettings.xhr();if(t.upload){t.upload.addEventListener("progress",function(e){var t=0;var n=e.loaded||e.position;var i=e.total;if(e.lengthComputable){t=Math.ceil(n/i*100)}r.uploadProgress(e,n,i,t)},false)}return t}}u.data=null;var a=u.beforeSend;u.beforeSend=function(e,t){if(r.formData){t.data=r.formData}else{t.data=n}if(a){a.call(this,e,t)}};return e.ajax(u)}function A(t){function T(e){var t=null;try{if(e.contentWindow){t=e.contentWindow.document}}catch(n){s("cannot get iframe.contentWindow document: "+n)}if(t){return t}try{t=e.contentDocument?e.contentDocument:e.document}catch(n){s("cannot get iframe.contentDocument: "+n);t=e.document}return t}function k(){function f(){try{var e=T(v).readyState;s("state = "+e);if(e&&e.toLowerCase()=="uninitialized"){setTimeout(f,50)}}catch(t){s("Server abort: ",t," (",t.name,")");_(x);if(w){clearTimeout(w)}w=undefined}}var t=a.attr2("target"),n=a.attr2("action"),r="multipart/form-data",u=a.attr("enctype")||a.attr("encoding")||r;o.setAttribute("target",p);if(!i||/post/i.test(i)){o.setAttribute("method","POST")}if(n!=l.url){o.setAttribute("action",l.url)}if(!l.skipEncodingOverride&&(!i||/post/i.test(i))){a.attr({encoding:"multipart/form-data",enctype:"multipart/form-data"})}if(l.timeout){w=setTimeout(function(){b=true;_(S)},l.timeout)}var c=[];try{if(l.extraData){for(var h in l.extraData){if(l.extraData.hasOwnProperty(h)){if(e.isPlainObject(l.extraData[h])&&l.extraData[h].hasOwnProperty("name")&&l.extraData[h].hasOwnProperty("value")){c.push(e('<input type="hidden" name="'+l.extraData[h].name+'">').val(l.extraData[h].value).appendTo(o)[0])}else{c.push(e('<input type="hidden" name="'+h+'">').val(l.extraData[h]).appendTo(o)[0])}}}}if(!l.iframeTarget){d.appendTo("body")}if(v.attachEvent){v.attachEvent("onload",_)}else{v.addEventListener("load",_,false)}setTimeout(f,15);try{o.submit()}catch(m){var g=document.createElement("form").submit;g.apply(o)}}finally{o.setAttribute("action",n);o.setAttribute("enctype",u);if(t){o.setAttribute("target",t)}else{a.removeAttr("target")}e(c).remove()}}function _(t){if(m.aborted||M){return}A=T(v);if(!A){s("cannot access response document");t=x}if(t===S&&m){m.abort("timeout");E.reject(m,"timeout");return}else if(t==x&&m){m.abort("server abort");E.reject(m,"error","server abort");return}if(!A||A.location.href==l.iframeSrc){if(!b){return}}if(v.detachEvent){v.detachEvent("onload",_)}else{v.removeEventListener("load",_,false)}var n="success",r;try{if(b){throw"timeout"}var i=l.dataType=="xml"||A.XMLDocument||e.isXMLDoc(A);s("isXml="+i);if(!i&&window.opera&&(A.body===null||!A.body.innerHTML)){if(--O){s("requeing onLoad callback, DOM not available");setTimeout(_,250);return}}var o=A.body?A.body:A.documentElement;m.responseText=o?o.innerHTML:null;m.responseXML=A.XMLDocument?A.XMLDocument:A;if(i){l.dataType="xml"}m.getResponseHeader=function(e){var t={"content-type":l.dataType};return t[e.toLowerCase()]};if(o){m.status=Number(o.getAttribute("status"))||m.status;m.statusText=o.getAttribute("statusText")||m.statusText}var u=(l.dataType||"").toLowerCase();var a=/(json|script|text)/.test(u);if(a||l.textarea){var f=A.getElementsByTagName("textarea")[0];if(f){m.responseText=f.value;m.status=Number(f.getAttribute("status"))||m.status;m.statusText=f.getAttribute("statusText")||m.statusText}else if(a){var c=A.getElementsByTagName("pre")[0];var p=A.getElementsByTagName("body")[0];if(c){m.responseText=c.textContent?c.textContent:c.innerText}else if(p){m.responseText=p.textContent?p.textContent:p.innerText}}}else if(u=="xml"&&!m.responseXML&&m.responseText){m.responseXML=D(m.responseText)}try{L=H(m,u,l)}catch(g){n="parsererror";m.error=r=g||n}}catch(g){s("error caught: ",g);n="error";m.error=r=g||n}if(m.aborted){s("upload aborted");n=null}if(m.status){n=m.status>=200&&m.status<300||m.status===304?"success":"error"}if(n==="success"){if(l.success){l.success.call(l.context,L,"success",m)}E.resolve(m.responseText,"success",m);if(h){e.event.trigger("ajaxSuccess",[m,l])}}else if(n){if(r===undefined){r=m.statusText}if(l.error){l.error.call(l.context,m,n,r)}E.reject(m,"error",r);if(h){e.event.trigger("ajaxError",[m,l,r])}}if(h){e.event.trigger("ajaxComplete",[m,l])}if(h&&!--e.active){e.event.trigger("ajaxStop")}if(l.complete){l.complete.call(l.context,m,n)}M=true;if(l.timeout){clearTimeout(w)}setTimeout(function(){if(!l.iframeTarget){d.remove()}else{d.attr("src",l.iframeSrc)}m.responseXML=null},100)}var o=a[0],u,f,l,h,p,d,v,m,g,y,b,w;var E=e.Deferred();E.abort=function(e){m.abort(e)};if(t){for(f=0;f<c.length;f++){u=e(c[f]);if(n){u.prop("disabled",false)}else{u.removeAttr("disabled")}}}l=e.extend(true,{},e.ajaxSettings,r);l.context=l.context||l;p="jqFormIO"+(new Date).getTime();if(l.iframeTarget){d=e(l.iframeTarget);y=d.attr2("name");if(!y){d.attr2("name",p)}else{p=y}}else{d=e('<iframe name="'+p+'" src="'+l.iframeSrc+'" />');d.css({position:"absolute",top:"-1000px",left:"-1000px"})}v=d[0];m={aborted:0,responseText:null,responseXML:null,status:0,statusText:"n/a",getAllResponseHeaders:function(){},getResponseHeader:function(){},setRequestHeader:function(){},abort:function(t){var n=t==="timeout"?"timeout":"aborted";s("aborting upload... "+n);this.aborted=1;try{if(v.contentWindow.document.execCommand){v.contentWindow.document.execCommand("Stop")}}catch(r){}d.attr("src",l.iframeSrc);m.error=n;if(l.error){l.error.call(l.context,m,n,t)}if(h){e.event.trigger("ajaxError",[m,l,n])}if(l.complete){l.complete.call(l.context,m,n)}}};h=l.global;if(h&&0===e.active++){e.event.trigger("ajaxStart")}if(h){e.event.trigger("ajaxSend",[m,l])}if(l.beforeSend&&l.beforeSend.call(l.context,m,l)===false){if(l.global){e.active--}E.reject();return E}if(m.aborted){E.reject();return E}g=o.clk;if(g){y=g.name;if(y&&!g.disabled){l.extraData=l.extraData||{};l.extraData[y]=g.value;if(g.type=="image"){l.extraData[y+".x"]=o.clk_x;l.extraData[y+".y"]=o.clk_y}}}var S=1;var x=2;var N=e("meta[name=csrf-token]").attr("content");var C=e("meta[name=csrf-param]").attr("content");if(C&&N){l.extraData=l.extraData||{};l.extraData[C]=N}if(l.forceSync){k()}else{setTimeout(k,10)}var L,A,O=50,M;var D=e.parseXML||function(e,t){if(window.ActiveXObject){t=new ActiveXObject("Microsoft.XMLDOM");t.async="false";t.loadXML(e)}else{t=(new DOMParser).parseFromString(e,"text/xml")}return t&&t.documentElement&&t.documentElement.nodeName!="parsererror"?t:null};var P=e.parseJSON||function(e){return window["eval"]("("+e+")")};var H=function(t,n,r){var i=t.getResponseHeader("content-type")||"",s=n==="xml"||!n&&i.indexOf("xml")>=0,o=s?t.responseXML:t.responseText;if(s&&o.documentElement.nodeName==="parsererror"){if(e.error){e.error("parsererror")}}if(r&&r.dataFilter){o=r.dataFilter(o,n)}if(typeof o==="string"){if(n==="json"||!n&&i.indexOf("json")>=0){o=P(o)}else if(n==="script"||!n&&i.indexOf("javascript")>=0){e.globalEval(o)}}return o};return E}if(!this.length){s("ajaxSubmit: skipping submit process - no element selected");return this}var i,o,u,a=this;if(typeof r=="function"){r={success:r}}else if(r===undefined){r={}}i=r.type||this.attr2("method");o=r.url||this.attr2("action");u=typeof o==="string"?e.trim(o):"";u=u||window.location.href||"";if(u){u=(u.match(/^([^#]+)/)||[])[1]}r=e.extend(true,{url:u,success:e.ajaxSettings.success,type:i||e.ajaxSettings.type,iframeSrc:/^https/i.test(window.location.href||"")?"javascript:false":"about:blank"},r);var f={};this.trigger("form-pre-serialize",[this,r,f]);if(f.veto){s("ajaxSubmit: submit vetoed via form-pre-serialize trigger");return this}if(r.beforeSerialize&&r.beforeSerialize(this,r)===false){s("ajaxSubmit: submit aborted via beforeSerialize callback");return this}var l=r.traditional;if(l===undefined){l=e.ajaxSettings.traditional}var c=[];var h,p=this.formToArray(r.semantic,c);if(r.data){r.extraData=r.data;h=e.param(r.data,l)}if(r.beforeSubmit&&r.beforeSubmit(p,this,r)===false){s("ajaxSubmit: submit aborted via beforeSubmit callback");return this}this.trigger("form-submit-validate",[p,this,r,f]);if(f.veto){s("ajaxSubmit: submit vetoed via form-submit-validate trigger");return this}var d=e.param(p,l);if(h){d=d?d+"&"+h:h}if(r.type.toUpperCase()=="GET"){r.url+=(r.url.indexOf("?")>=0?"&":"?")+d;r.data=null}else{r.data=d}var v=[];if(r.resetForm){v.push(function(){a.resetForm()})}if(r.clearForm){v.push(function(){a.clearForm(r.includeHidden)})}if(!r.dataType&&r.target){var m=r.success||function(){};v.push(function(t){var n=r.replaceTarget?"replaceWith":"html";e(r.target)[n](t).each(m,arguments)})}else if(r.success){v.push(r.success)}r.success=function(e,t,n){var i=r.context||this;for(var s=0,o=v.length;s<o;s++){v[s].apply(i,[e,t,n||a,a])}};if(r.error){var g=r.error;r.error=function(e,t,n){var i=r.context||this;g.apply(i,[e,t,n,a])}}if(r.complete){var y=r.complete;r.complete=function(e,t){var n=r.context||this;y.apply(n,[e,t,a])}}var b=e("input[type=file]:enabled",this).filter(function(){return e(this).val()!==""});var w=b.length>0;var E="multipart/form-data";var S=a.attr("enctype")==E||a.attr("encoding")==E;var x=t.fileapi&&t.formdata;s("fileAPI :"+x);var T=(w||S)&&!x;var N;if(r.iframe!==false&&(r.iframe||T)){if(r.closeKeepAlive){e.get(r.closeKeepAlive,function(){N=A(p)})}else{N=A(p)}}else if((w||S)&&x){N=L(p)}else{N=e.ajax(r)}a.removeData("jqxhr").data("jqxhr",N);for(var C=0;C<c.length;C++){c[C]=null}this.trigger("form-submit-notify",[this,r]);return this};e.fn.ajaxForm=function(t){t=t||{};t.delegation=t.delegation&&e.isFunction(e.fn.on);if(!t.delegation&&this.length===0){var n={s:this.selector,c:this.context};if(!e.isReady&&n.s){s("DOM not ready, queuing ajaxForm");e(function(){e(n.s,n.c).ajaxForm(t)});return this}s("terminating; zero elements found by selector"+(e.isReady?"":" (DOM not ready)"));return this}if(t.delegation){e(document).off("submit.form-plugin",this.selector,r).off("click.form-plugin",this.selector,i).on("submit.form-plugin",this.selector,t,r).on("click.form-plugin",this.selector,t,i);return this}return this.ajaxFormUnbind().bind("submit.form-plugin",t,r).bind("click.form-plugin",t,i)};e.fn.ajaxFormUnbind=function(){return this.unbind("submit.form-plugin click.form-plugin")};e.fn.formToArray=function(n,r){var i=[];if(this.length===0){return i}var s=this[0];var o=this.attr("id");var u=n?s.getElementsByTagName("*"):s.elements;var a;if(u&&!/MSIE [678]/.test(navigator.userAgent)){u=e(u).get()}if(o){a=e(':input[form="'+o+'"]').get();if(a.length){u=(u||[]).concat(a)}}if(!u||!u.length){return i}var f,l,c,h,p,d,v;for(f=0,d=u.length;f<d;f++){p=u[f];c=p.name;if(!c||p.disabled){continue}if(n&&s.clk&&p.type=="image"){if(s.clk==p){i.push({name:c,value:e(p).val(),type:p.type});i.push({name:c+".x",value:s.clk_x},{name:c+".y",value:s.clk_y})}continue}h=e.fieldValue(p,true);if(h&&h.constructor==Array){if(r){r.push(p)}for(l=0,v=h.length;l<v;l++){i.push({name:c,value:h[l]})}}else if(t.fileapi&&p.type=="file"){if(r){r.push(p)}var m=p.files;if(m.length){for(l=0;l<m.length;l++){i.push({name:c,value:m[l],type:p.type})}}else{i.push({name:c,value:"",type:p.type})}}else if(h!==null&&typeof h!="undefined"){if(r){r.push(p)}i.push({name:c,value:h,type:p.type,required:p.required})}}if(!n&&s.clk){var g=e(s.clk),y=g[0];c=y.name;if(c&&!y.disabled&&y.type=="image"){i.push({name:c,value:g.val()});i.push({name:c+".x",value:s.clk_x},{name:c+".y",value:s.clk_y})}}return i};e.fn.formSerialize=function(t){return e.param(this.formToArray(t))};e.fn.fieldSerialize=function(t){var n=[];this.each(function(){var r=this.name;if(!r){return}var i=e.fieldValue(this,t);if(i&&i.constructor==Array){for(var s=0,o=i.length;s<o;s++){n.push({name:r,value:i[s]})}}else if(i!==null&&typeof i!="undefined"){n.push({name:this.name,value:i})}});return e.param(n)};e.fn.fieldValue=function(t){for(var n=[],r=0,i=this.length;r<i;r++){var s=this[r];var o=e.fieldValue(s,t);if(o===null||typeof o=="undefined"||o.constructor==Array&&!o.length){continue}if(o.constructor==Array){e.merge(n,o)}else{n.push(o)}}return n};e.fieldValue=function(t,n){var r=t.name,i=t.type,s=t.tagName.toLowerCase();if(n===undefined){n=true}if(n&&(!r||t.disabled||i=="reset"||i=="button"||(i=="checkbox"||i=="radio")&&!t.checked||(i=="submit"||i=="image")&&t.form&&t.form.clk!=t||s=="select"&&t.selectedIndex==-1)){return null}if(s=="select"){var o=t.selectedIndex;if(o<0){return null}var u=[],a=t.options;var f=i=="select-one";var l=f?o+1:a.length;for(var c=f?o:0;c<l;c++){var h=a[c];if(h.selected){var p=h.value;if(!p){p=h.attributes&&h.attributes.value&&!h.attributes.value.specified?h.text:h.value}if(f){return p}u.push(p)}}return u}return e(t).val()};e.fn.clearForm=function(t){return this.each(function(){e("input,select,textarea",this).clearFields(t)})};e.fn.clearFields=e.fn.clearInputs=function(t){var n=/^(?:color|date|datetime|email|month|number|password|range|search|tel|text|time|url|week)$/i;return this.each(function(){var r=this.type,i=this.tagName.toLowerCase();if(n.test(r)||i=="textarea"){this.value=""}else if(r=="checkbox"||r=="radio"){this.checked=false}else if(i=="select"){this.selectedIndex=-1}else if(r=="file"){if(/MSIE/.test(navigator.userAgent)){e(this).replaceWith(e(this).clone(true))}else{e(this).val("")}}else if(t){if(t===true&&/hidden/.test(r)||typeof t=="string"&&e(this).is(t)){this.value=""}}})};e.fn.resetForm=function(){return this.each(function(){if(typeof this.reset=="function"||typeof this.reset=="object"&&!this.reset.nodeType){this.reset()}})};e.fn.enable=function(e){if(e===undefined){e=true}return this.each(function(){this.disabled=!e})};e.fn.selected=function(t){if(t===undefined){t=true}return this.each(function(){var n=this.type;if(n=="checkbox"||n=="radio"){this.checked=t}else if(this.tagName.toLowerCase()=="option"){var r=e(this).parent("select");if(t&&r[0]&&r[0].type=="select-one"){r.find("option").selected(false)}this.selected=t}})};e.fn.ajaxSubmit.debug=false})
-		</script>
-
-		
+		</script>	
     </div>
     <!-- /#wrapper -->
-    <!-- Toast Examples
-					<ul class="list">
-					  <li><a href="#" onclick="Toast.success('Message')">Success</a></li>
-					  <li><a href="#" onclick="Toast.success('Message', 'Title', {displayDuration: 0})">Sticky success
-						with title</a></li>
-					  <li><a href="#" onclick="Toast.info('Message', '', {displayDuration: 0})">Sticky info</a></li>
-					  <li><a href="#"
-							 onclick="Toast.defaults.displayDuration=500; Toast.info('Default displayDuration 500ms', 'Title')">Info:
-						Change displayDuration to 200ms</a></li>
-					  <li><a href="#"
-							 onclick="Toast.defaults.displayDuration=2000; Toast.warning('Default displayDuration 2000ms')">Warning:
-						Change displayDuration to 2000ms</a></li>
-					  <li><a href="#" onclick="Toast.warning('Message', 'Title')">Warning with title</a></li>
-					  <li><a href="#" onclick="Toast.error('Message')">Error</a></li>
-					  <li><a href="#" onclick="Toast.error('Message', 'Title')">Error with title</a></li>
-					  <li><a href="#" onclick="Toast.defaults.width='600px'; Toast.info('Message', 'Title')">Info with
-						title: Changed default width to 600px</a></li>
-					  <li><a href="#" onclick="Toast.defaults.width='200px'; Toast.info('Message', 'Title')">Info with
-						title: Changed default width to 200px</a></li>
-					</ul>
-	-->
+   
 	</body>
 	<!-- Modal for creating article -->
 	<div class="modal fade" id="createArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -1012,6 +951,8 @@
 			 </div>
 		</div>
 	</div>
+	
+	<!-- Modal for editing link-->
 	<div class="modal fade" id="Editlink" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  style='vertical-align: middle'>
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">

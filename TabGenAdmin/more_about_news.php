@@ -109,11 +109,11 @@
 	<!-- text editing features -->
 	<script src="tinymce/js/tinymce/tinymce.min.js"></script>
 	<script src="tinymce/js/tinymce/jquery.tinymce.min.js"></script>
-	<!--<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>-->
+	
 	<script>
 		var before_timestamp;
 		var after_timestamp;
-		
+		/*This will embed text editing tools and features in the textarea*/
 		function embed_text_editor(){
 			tinymce.init({ 
 				selector:'textarea',
@@ -133,35 +133,7 @@
 		
 	</script>
 	
-	
-	<script type="text/JavaScript">
-		
-		function getSession(){
-			setInterval(
-				function(){
-						//alert("Hello"); 
-						$.ajax({
-						url: "getUserSession.php",
-						type: "GET",
-						success:function(data){
-							if(data.trim()=="null"){
-								//user_session=null;
-								//window.location.assign("index.html");
-							}
-							else{
-								//user_session=JSON.parse(data);
-							}
-						},
-						error:function(error_data,y,z){
-							//user_session=null;
-							//alert(error_data+" "+y+" "+z);
-						}
-					});
-				}, 30000);	
-		}
-	</script>
-	<body onload='getSession();'>
-		
+	<body>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 		  <div class="container-fluid">
 			<div class="navbar-header">
@@ -179,7 +151,7 @@
 			</div>
 			
 			<script type="text/JavaScript">
-					var output;//contains list of articles, global variable
+					var output;
 					var files_path=[];
 					
 					var queryString = new Array();
@@ -189,14 +161,13 @@
 							var key = params[i].split('=')[0];
 							var value = decodeURIComponent(params[i].split('=')[1]);
 							queryString[key] = value;
-							//alert(key);
 						}
 					}
 					
 					var tab_id=queryString['tab_id'];
 					getNewsArticles(tab_id,'first_time_load');
-					//alert(tab_id);	
 					
+					/*Function for displaying list of attached files*/
 					function getFiles(i){
 						var file_list=files_path[i];
 						var files_layout="";
@@ -225,11 +196,11 @@
 									"</div></center></div>";
 						}
 						else{
-							layout="<br/><div id='image_layout"+i+"'>"+
-								"<center><img class='img-thumbnail' src='"+img_src+"' alt='No Image' "+
-										"height='350px' width='80%'/><br/>"+
+							layout="<div style='width:100%' id='image_layout"+i+"'>"+
+								"<img src='"+img_src+"' alt='No Image' "+
+										"height='80%' width='100%'/><br/>"+
 									"<div id='image_upload_layout"+i+"'>"+
-									"</div></center></div>";
+									"</div></div>";
 						}
 						return layout;
 					}
@@ -286,6 +257,9 @@
 								$("#image_progress_div"+i).show();
 								$(this).ajaxSubmit({
 									url: "upload.php", 
+									beforeSend: function (xhr) {
+										xhr.setRequestHeader('Authorization',user_session.token);
+									},
 									beforeSubmit: function() {
 									  $("#progress-bar"+i).width('0%');
 									},
@@ -296,7 +270,7 @@
 									success:function (resp){
 										$("#image_loader_icon"+i).hide();
 										var json_resp = JSON.parse(resp);
-										//alert(json_resp.image_path);
+										
 										if(json_resp.status==true){
 											$("image_label"+i).html("Replace the picture");
 											closeImageUpload(i,json_resp.image_path);	
@@ -331,12 +305,10 @@
 						var edit_layout="<br/>Edit content below:"+
 						"<button onclick='cancel_edit_content(\""+i+"\");' class='close'>&times</button>&nbsp;"+
 						"<textarea class='form-control' id='news_details_id"+i+"'>"+output[i].Details+"</textarea>"+
-						"<div class='pull-right'>"+
-						"<button onclick='save_edit_content(\""+i+"\");' class='btn btn-default'>Save</button>"+
-						"</div>";
+						"<br/><div class='pull-right'>"+
+						"<button onclick='save_edit_content(\""+i+"\");' class='btn btn-primary'>Save</button>"+
+						"</div><br/><hr/>";
 						document.getElementById("textual_content_layout"+i).innerHTML=edit_layout;
-						
-						/*"#news_details_id"+i*/
 						embed_text_editor();
 					}
 					
@@ -350,7 +322,7 @@
 					function save_edit_content(i){
 						var news_details = tinyMCE.get('news_details_id'+i).getContent();
 						var article_id = document.getElementById("article_id"+i).value;
-						//$("#textual_content_layout"+i).html("<center>Wait please...</center>");
+						
 						$.ajax({
 							url: "update_article.php",
 							type:"POST",
@@ -366,7 +338,6 @@
 								});
 							},
 							success: function(resp){
-								//alert(resp);
 								var json_resp = JSON.parse(resp);
 								if(json_resp.status==true){
 									swal("Update Successful!", json_resp.message, "success");
@@ -391,17 +362,16 @@
 									"</div><br/>";
 						return layout;
 					}
-					
+					/*function for displaying layout for editing news headline */
 					function edit_news_headline(i){
-						var edit_layout="<div class='edit_headline'><label for='news_headline_id"+i+"'>News Headline:</label>"+
+						var edit_layout="<div class='normal_div'>"+
 						"<button onclick='cancel_edit_headline(\""+i+"\");' class='close'>&times;</button>"+
-						/*"<input type='text' placeholder='Put your news headline here' class='form-control' id='news_headline_id"+i+"' "+
-						"value='"+output[i].headline+"'/><br/>"+*/
-						"<textarea class='textarea_bg' id='news_headline_id"+i+"'>"+output[i].headline+"</textarea><br/>"+
-						"<center><button onclick='save_edit_headline(\""+i+"\");' class='btn'>Save</button></center>"+
+						"<textarea class='heading' id='news_headline_id"+i+"'>"+output[i].headline+"</textarea>"+
+						"<button onclick='save_edit_headline(\""+i+"\");' style='float:right' class='btn btn-primary'>SAVE</button>"+
 						"</div><br/><br/>";
 						document.getElementById("headline_layout"+i).innerHTML=edit_layout;		
 					}
+					/*to cancel edit*/
 					function cancel_edit_headline(i){			
 						var layout=get_headline(i);
 						$("#headline_layout"+i).html(layout);
@@ -411,7 +381,7 @@
 					function save_edit_headline(i){
 						var news_headline = document.getElementById('news_headline_id'+i).value;//tinyMCE.get('news_headline_id'+i).getContent();
 						var article_id = document.getElementById("article_id"+i).value;
-						//alert(news_headline);
+						
 						var trim=news_headline.trim();
 						if(trim.length==0)
 						swal("No input!", "Please write something for headline", "error");
@@ -423,7 +393,6 @@
 								xhr.setRequestHeader('Authorization',user_session.token);
 							},
 							success: function(resp){
-								//alert(resp);
 								var json_resp = JSON.parse(resp);
 								if(json_resp.status==true){
 									swal("Update Successful!", json_resp.message, "success");
@@ -441,7 +410,7 @@
 						});
 						
 					}
-	
+	/*function to update link*/
 	function update_link(i){
 		var article_id = output[i].Id;
 		swal({
@@ -464,8 +433,7 @@
 			return false
 		  }
 		  else{
-			  setTimeout(function () {
-				
+			  setTimeout(function () {	
 				$.ajax({
 						url: "update_article.php",
 						type:"POST",
@@ -489,29 +457,69 @@
 							"requested resource is not found or not working well.", "error");
 						}
 				});
-				//swal("Ajax request finished!");		
+						
 			  }, 3000);
-			  //swal("Nice!", "You wrote: " + article_id, "success");
+			  
 		  }
 		});
 	}
 	
+	/*function to remove link of a news article*/
+	function remove_link(i){
+		
+		var article_id = output[i].Id;
+		
+		$.ajax({
+			url: "update_article.php",
+			type:"POST",
+			data:{"article_id":article_id,"news_link":"null"},
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Authorization',user_session.token);
+			},
+			success: function(resp){	
+				var json_resp = JSON.parse(resp);
+				if(json_resp.status==true){
+					swal("Link removed", "Link has been removed", "success");
+						output[i].Link="";
+						$("#link_layout"+i).html(get_News_link(i));
+				}
+				else{
+					swal("Update Failed!", json_resp.message, "error");
+				}
+			},
+			error: function(x,y,z){
+				swal(z+"!", "Request could not be fulfilled due to server error or "+
+							"requested resource is not found or not working well.", "error");
+			}
+		});
+	}
+	
+	/*function to get and display news link*/
 	function get_News_link(i){
 		var link_layout="";
 		var url = output[i].Link;
-		if(url.trim().length==0){
+		if(url.trim().length==0 || url==null){
 			link_layout="";
+			$("#link_label"+i).html("Add a link");
 		}
 		else{
+			$("#link_label"+i).html("Edit the link");
 			if(youtube_parser(url)!=null){
 				var video_id = youtube_parser(url);
 				link_layout=""+
-					"<center><iframe height='310' width='460' allowfullscreen='true'"+
-							" src='https://www.youtube.com/embed/"+video_id+"?autoplay=0'>"+
-							"</iframe></center>";
+						"<div class='videoWrapper'>"+
+							"<iframe allowfullscreen='true'"+
+								" src='https://www.youtube.com/embed/"+video_id+"?autoplay=0'>"+
+							"</iframe>"+
+						"</div>"+
+						"<div style='padding:5px;width:100%'>"+
+						"<button style='float:right' class='btn-remove'"+
+							" onclick='remove_link(\""+i+"\");'>Remove Link</button></div>";
 			}
 			else{
-				link_layout="<br/><a href='"+url+"' target='_blank'>"+url+"</a><br/>";
+				link_layout="<br/><div class='link_bg'><a href='"+url+"' target='_blank'>"+url+"</a>"+
+				"&nbsp;<button class='close' onclick='remove_link(\""+i+"\");'>&times;</button>"+
+				"</div><br/>";
 			}
 		}
 		return link_layout;
@@ -529,7 +537,7 @@
 		else if(loading_mode=="after"){
 			data="tab_id="+tab_id+"&loading_mode="+loading_mode+"&timestamp="+after_timestamp;
 		}
-		//$("#tab_contents").html("<center><p>Loading...</p></center>");
+		
 		$.ajax({
 			url: "getNewsArticle.php?"+data,
 			type: "GET",
@@ -543,8 +551,6 @@
 					if(output==null){
 						if(loading_mode=="first_time_load"){
 							document.getElementById("left_column").innerHTML="<br/><center>"+
-							"<img src='img/empty_article_box.jpg' class='img-circle' alt='No Article'"+
-							" height='50%' width='60%'/>"+
 							"<br/><div class='well'>No news article found, create a new one.</div></center>";
 						}
 						else if(loading_mode=="before"){
@@ -553,7 +559,6 @@
 						}
 						else if(loading_mode=="after"){
 							//do nothing
-							//swal("No more news article!");
 						}
 						return false;
 					}
@@ -606,16 +611,16 @@
 								"<li><a class='tools' onclick='edit_content(\""+i+"\");'>Edit Content</a></li>"+
 								"<li><a class='tools' onclick='upload_news_image(\""+i+"\",\""+output[i].Image+"\");'>"+
 								"<span id='image_label"+i+"'>"+image_label+"</span></a></li>"+
-								"<li><a class='tools' onclick='update_link(\""+i+"\");'>"+link_label+"</a></li>"+
+								"<li><a class='tools' id='link_label"+i+"' onclick='update_link(\""+i+"\");'>"+link_label+"</a></li>"+
 								"<li role='separator' class='divider'></li>"+
 								"<li><a class='tools' onclick='attachFile(\""+i+"\");'>Attach file</a></li>"+
 							  "</ul>"+
-							"</div>";
+							"</div><br/>";
 						if(i%2==0){
 							article_left+=""+
 							"<div class='news_article'>"+tools+
 								"<div id='article_title"+i+"'>"+
-									"<h2 class='headLine'>"+output[i].title+"</h2>"+
+									/*"<h2 class='headLine'>"+output[i].title+"</h2>"+*/
 									"<input type='hidden' id='article_id"+i+"' value='"+output[i].Id+"'/>"+	
 								"</div>"+
 								"<div id='headline_layout"+i+"'>"+get_headline(i)+"</div>"+
@@ -623,18 +628,14 @@
 								"<div id='textual_content_layout"+i+"' style='padding:10px'>"+
 									"<div id='textual_content"+i+"'>"+output[i].Details+"</div>"+
 								"</div>"+
-								"<div id='link_layout"+i+"' style='padding:10px'>"+get_News_link(i)+"</div>"+
-								"<div style='width:98%;overflow:hidden;overflow-x:auto;padding-left:10px' "+
+								"<div id='link_layout"+i+"'>"+get_News_link(i)+"</div><br/>"+
+								"<div style='width:98%;overflow:hidden;overflow-x:auto;padding-left:5px;padding-right:5px' "+
 										"id='files_content"+i+"'>"+getFiles(i)+"</div>"+
 								"<br/><hr/>"+
 								"<div id='file_attachment_layout"+i+"'></div>"+
 								"<div>"+status_layout+"</div>"+
-								"<span style='font-size:8pt;float:right'>"+
-								getHumanReadableDate(created_at)+"</span>"+
-								/*"<button class='btn btn-success' style='padding:5px;float:right"+
-									"' onclick='attachFile(\""+i+"\");'>"+
-									"<span class='glyphicon glyphicon-paperclip'></span>&nbsp;Attach a file"+
-								"</button>"+*/	
+								"<span style='font-size:8pt;float:right;padding:5px'>"+
+								getHumanReadableDate(created_at)+"</span>"+	
 							"</div>";
 							document.getElementById("left_column").innerHTML=article_left;
 						}
@@ -642,7 +643,7 @@
 							article_right+=""+
 							"<div class='news_article'>"+tools+
 								"<div id='article_title"+i+"'>"+
-								"<h2 class='headLine'>"+output[i].title+"</h2>"+
+									/*"<h2 class='headLine'>"+output[i].title+"</h2>"+*/
 									"<input type='hidden' id='article_id"+i+"' value='"+output[i].Id+"'/>"+	
 								"</div>"+
 								"<div id='headline_layout"+i+"'>"+get_headline(i)+"</div>"+
@@ -650,18 +651,14 @@
 								"<div id='textual_content_layout"+i+"' style='padding:10px'>"+
 									"<div id='textual_content"+i+"'>"+output[i].Details+"</div>"+
 								"</div>"+
-								"<div id='link_layout"+i+"' style='padding:10px'>"+get_News_link(i)+"</div>"+
-								"<div style='width:98%;overflow:hidden;overflow-x:auto;padding-left:10px' "+
+								"<div id='link_layout"+i+"'>"+get_News_link(i)+"</div><br/>"+
+								"<div style='width:98%;overflow:hidden;overflow-x:auto;padding-left:5px;padding-right:5px' "+
 										"id='files_content"+i+"'>"+getFiles(i)+"</div>"+
 								"<br/><hr/>"+
 								"<div id='file_attachment_layout"+i+"'></div>"+
 								"<div>"+status_layout+"</div>"+
-								"<span style='font-size:8pt;float:right'>"+
-								getHumanReadableDate(created_at)+"</span>"+
-								/*"<button class='btn btn-success' style='padding:5px;float:right"+
-									"' onclick='attachFile(\""+i+"\");'>"+
-									"<span class='glyphicon glyphicon-paperclip'></span>&nbsp;Attach a file"+
-								"</button>"+*/	
+								"<span style='font-size:8pt;float:right;padding:5px'>"+
+								getHumanReadableDate(created_at)+"</span>"+	
 							"</div>";
 							document.getElementById("right_column").innerHTML=article_right;
 						}
@@ -681,7 +678,8 @@
 		});
 	}
 	/*end of getNewsArticles()*/
-					/*js for activating and deactivating news article*/
+					
+	/*js for activating and deactivating news article*/
 					function activateOrDeactivateArticle(i){
 						var article_id = document.getElementById("article_id"+i).value;
 						var status = document.getElementById("myonoffswitch"+i).checked;
@@ -759,11 +757,13 @@
 								"</center>"+
 							"</div></center>";
 						document.getElementById("file_attachment_layout"+i).innerHTML=file_upload_layout;
-						//document.getElementById("files_content"+i).innerHTML=file_upload_layout;
+						
 						$("#uploadFileForm"+i).submit(function(e) {	
 							var path = $("#userFile"+i).val();
-							//var Extension = img_path.substring(img_path.lastIndexOf('.') + 1).toLowerCase();
 							var path_length = $('#userFile'+i).val().trim().length;
+							
+							var file_input = document.getElementById("userFile"+i);
+							var file = file_input.files[0];
 							
 							if(path==null || path_length==0){
 								$("#file_attachment_layout"+i).html("<center><br/><div class='select_file_bg'>"+
@@ -783,6 +783,14 @@
 									"</div>");
 								return false;
 							}
+							else if(file.size>1024*1024*20){
+								$("#file_attachment_layout"+i).html("<br/><div class='isa_warning'>"+
+									"<p>File size must not exceed 20 MB.</p>"+
+									"<center><button type='button' class='btn' "+
+									"onclick='attachFile(\""+i+"\");'>OK</button></center>"+
+									"</div>");
+								return false;
+							}
 							else{
 								e.preventDefault();
 								$("#file_loader-icon"+i).show();
@@ -790,6 +798,9 @@
 								$(this).ajaxSubmit({ 
 									beforeSubmit: function() {
 									  $("#file_progress-bar"+i).width('0%');
+									},
+									beforeSend: function (xhr) {
+										xhr.setRequestHeader('Authorization',user_session.token);
 									},
 									uploadProgress: function (event, position, total, percentComplete){	
 										$("#file_progress-bar"+i).width(percentComplete + '%');
@@ -803,7 +814,7 @@
 											refreshFileLayout(i);
 										}
 										else{
-											$("#file_attachment_layout"+i).html("<center><br/><div class=''>"+
+											$("#file_attachment_layout"+i).html("<center><br/><div class='isa_error'>"+
 												json_resp.message+
 												"<button type='button' class='close' "+
 													"onclick='attachFile(\""+i+"\");'>&times;</button>"+
@@ -835,7 +846,10 @@
 								$.ajax({
 									url: "delete_file.php",
 									type: "POST",
-									data: {"user_id":user_session.id,"file_id":file_id,"article_id":article_id},
+									data: {"file_id":file_id,"article_id":article_id},
+									beforeSend: function (xhr) {
+										xhr.setRequestHeader('Authorization',user_session.token);
+									},
 									success: function(resp){
 										var json_resp = JSON.parse(resp);
 										if(json_resp.status==true){
@@ -900,12 +914,6 @@
 					?> <span class="sr-only">(current)</span></a>
 				</li>
 				<li>
-					<!--
-					<a>
-						<button class='btn' onclick="getNewsArticles(tab_id,'first_time_load');">
-							<span class="glyphicon glyphicon-repeat"></span> Reload
-						</button>
-					</a>-->
 				</li>	
 			  </ul>
 			  <ul class="nav navbar-nav navbar-right">	 
@@ -1005,9 +1013,7 @@
 									<label class="col-sm-2  control-label" for="news_details">News Details:</label>
 									<div class="col-sm-10">
 										<div id="news_in_details">
-											<!--<textarea name='news_details' id='news_details' class='form-control'
-											placeholder='Write something in details here...'
-											onclick='display_editor();'></textarea>-->
+											
 										</div>
 										<div id="details_validate"></div>
 									</div>
@@ -1036,7 +1042,7 @@
 													e.stopImmediatePropagation();
 												}
 											});
-											
+											/*display editor for writing text*/
 											function display_editor(){
 												var edit_news_detail_layout=""+
 												"<textarea class='form-control' name='news_details' id='news_details'>"+ 
@@ -1072,7 +1078,7 @@
 												var news_headline = document.getElementById("news_headline").value;
 												var news_details = tinyMCE.get('news_details').getContent();
 												var ext_link = document.getElementById("external_link").value;
-												//alert(news_details);
+												
 												if(validateNews()){
 													$('#publishNewsResponse').css('color', 'black');
 													$('#publishNewsResponse').html("<center><strong>Wait Please...</strong></center>");
@@ -1094,7 +1100,7 @@
 															if(j_resp.status==true){
 																$('#publishNewsResponse').html("<div class='isa_success'><center>"+
 																j_resp.message+"</center></div>");
-																//$("#publishNewsResponse").css('color', 'green');
+																
 																getNewsArticles(tab_id,'first_time_load');
 															}
 															else{
@@ -1121,7 +1127,7 @@
 												if(isEmpty(news_title.trim())){
 													$('#title_validate').html("<div class='isa_warning'>"+
 													"Put title of the news.</div>");
-													//$("#title_validate").css('color', 'red');
+													
 													flag=false;
 												}
 												else{

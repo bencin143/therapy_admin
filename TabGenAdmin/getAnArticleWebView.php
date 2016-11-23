@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- This is a responsive mobile web view for displaying an article-->
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
@@ -13,11 +14,6 @@
 		<script type="text/javascript" src="js/toast.js"></script>
 		<!-- ********************************************** -->	
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<!-- This is what you need for sweet alert -->
-		<script src="dist/sweetalert-dev.js"></script>
-		<link rel="stylesheet" href="dist/sweetalert.css">
-		<!--.......................-->
 		
 		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
@@ -34,18 +30,18 @@
 			include('connect_db.php');
 
 			if(empty($_GET['article_id'])){
-				//echo json_encode(array("status"=>false,"message"=>"Please send article ID"));
 				echo "Please send article ID...";
 			}
 			else{
 				$id = $_GET['article_id'];
 				if($conn){
 					$output=null;
-					$query = "select Id,CreateAt,DeleteAt,UpdateAt,Name,Textual_content,Images,Links as external_link_url,Active 
-						from Article where Id='$id'";
+					$query = "select Id,CreateAt,DeleteAt,UpdateAt,Name,Textual_content,Images,
+					Links as external_link_url,Active from Article where Id='$id'";
 					$res=$conn->query($query);
 					if($res){
 						while($row=$res->fetch(PDO::FETCH_ASSOC)){
+							//$row=$res->fetch(PDO::FETCH_ASSOC)
 							$row['CreateAt']=(double)$row['CreateAt'];
 							$row['DeleteAt']=(double)$row['DeleteAt'];
 							$row['UpdateAt']=(double)$row['UpdateAt'];
@@ -54,8 +50,8 @@
 							$row['Images']=($row['Images']==null)?"":$row['Images'];
 							$row['images_url']=($row['Images']==null)?"http://".SERVER_IP."/TabGenAdmin/img/noimage.jpg":
 							"http://".SERVER_IP."/TabGenAdmin/".$row['Images'];
-							if($row['Images']!=null){
-								echo "<center><img class='img-thumbnail' src='".$row['Images']."'/></center>";
+							if($row['Images']!=null && $row['Images']!=""){
+								echo "<center><img width='100%' height='80%' src='".$row['Images']."'/></center>";
 							}
 							echo $row['Textual_content']."</br>";
 							$row['Textual_content']=str_replace("''","'",$row['Textual_content']);
@@ -64,76 +60,30 @@
 							if($link!="" && $link!=null){
 								if(getYouTubeID($link)!=null){
 									$video_id=getYouTubeID($link);
-									echo "<iframe height='315' width='480' 
-									allowfullscreen='true' src='https://www.youtube.com/embed/".$video_id."?autoplay=0'></iframe>";
+									echo "<div class='videoWrapper'><iframe 
+									allowfullscreen='true' src='https://www.youtube.com/embed/".$video_id."?autoplay=0'>
+									</iframe></div>";
 								}
 								else{
 									//echo curl($link);//"<a href='$link'>".$link."</a><br/>";
-									header('Location: '.$link);
+									//header('Location: '.$link);
+									echo "<br/><center><a class='btn btn-success' href='$link'>
+									Click here to see more</a></center>";
 								}
 							}
-							$row['Filenames']=getAttatchment($conn,$row['Id']);
-							$attachment=getAttatchment($conn,$row['Id']);
-							if(sizeof($attachment)>0)
-								echo sizeof($attachment)>1?sizeof($attachment)." attachments:<br/>":sizeof($attachment)." attachment:<br/>";
-							for($i=0;$i<sizeof($attachment);$i++){
-								echo "<div class='col-sm-4'><a href='".$attachment[$i]['attachment_url']."' 
-								target='_blank' download>".$attachment[$i]['file_name']."</a></div>";
-							}
-							//$output[] = $row;
+							
 						}
-						//echo json_encode(array("status"=>true,"response"=>$output));
+						
 					}
 					else {
-						//echo json_encode(array("status"=>false,"message"=>"Sorry, unable to get result."));
+						
 						echo "Sorry, unable to get result.";
 					}
 					
 				}
 				else{
-					//echo json_encode(array("status"=>false,"message"=>"Sorry, unable to connect database."));
 					echo "Sorry, unable to connect database.";
 				}
-			}
-			function getAttatchment($conn,$article_id){
-				$query = "select Id,caption,file_name from ArticleFiles where article_id='$article_id'";
-				$res = $conn->query($query);
-				$files_output=array();
-				while($row = $res->fetch(PDO::FETCH_ASSOC)){
-					$row['file_type']=getFileType($row['file_name']);
-					$row['file_name']=substr($row['file_name'],strpos($row['file_name'],"/")+1);
-					$row['attachment_url']="http://".SERVER_IP."/TabGenAdmin/".$row['file_name'];
-					$row['caption']=($row['caption']==null)?"":$row['caption'];
-					$files_output[]=$row;
-				}
-				return $files_output;
-			}
-
-			function getFileType($filename){
-				$ext = pathinfo($filename, PATHINFO_EXTENSION);
-				$file_type="";
-				switch($ext){
-					case "gif": 
-					case "jpeg":
-					case "png":	
-					case "bmp":
-					case "jpg":	$file_type="image";
-								break;
-					case "pdf": $file_type="pdf";
-								break;
-					case "docx":
-					case "doc":	$file_type="word";
-								break;
-					case "pptx":
-					case "ppt":	$file_type="power_point";
-								break;	
-					case "mkv":
-					case "mpeg":
-					case "mp4":	$file_type="video";
-								break;
-					default: 	$file_type="others";	
-				}
-				return $file_type;
 			}
 			
 			?>

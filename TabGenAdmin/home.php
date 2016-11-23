@@ -25,36 +25,30 @@
 		/*
 		 * global variables
 		 * */
-		var IP="128.199.111.18";
+		
 		var arr; /*array for tab template association*/
 		var prev_tab_name = [];/*Global array for tab name*/
 		var templates_arr=""; /*list of templates*/
-		var tabs=[];
-		var json_arr;
-		var role_list;
-		var user_session;
-		/*
-		var js_session = sessionStorage.getItem('user_details');
-		user_session = JSON.parse(js_session);*/
-		check_session();
+		var tabs=[];//list of tabs
+		//var json_arr;
+		var role_list;//list of roles
+		var user_session;//user details from server
 		
 		$(document).ready(function(){
-			//test_input();
+			//getting template lists from server
+			setTemplateList("choose_templates");
 			$("#menu-toggle").click(function(e) {
 				e.preventDefault();
 				$("#wrapper").toggleClass("toggled");
 			});
-			//alert(user_session.token);
-			window.mm_session_token_index =  0 ;
-            $.ajaxSetup({
-                headers: { 'X-MM-TokenIndex': mm_session_token_index,'Authorization':'Bearer '+user_session.token }
-            });
 		});
-		
+		check_session();//checks for user sesion
+		/*function to check whether the session is alive or not, which 
+		means if user's token is still valid, he/she will be able to do/access tasks. 
+		The token will exist or remains valid untill and unless the user voluntarily logs out.*/
 		function check_session(){
 			var js_session = sessionStorage.getItem('user_details');
 			if(js_session=="null" || js_session=="" || js_session==null){
-				//window.location.assign("index.html");
 				$.ajax({
 					url: "getUserSession.php",
 					type: "GET",
@@ -70,19 +64,16 @@
 					},
 					error:function(error_data,y,z){
 						window.location.assign("index.html");
-						//user_session=null;
-						//alert(error_data+" "+y+" "+z);
 					}
 				});
 			}
-			else user_session = JSON.parse(js_session);	
+			else  user_session = JSON.parse(js_session);	
 		}
+		//function to remove user details when the user click logout button
 		function removeSession(){
 			sessionStorage.setItem('user_details', "null");
 		}
-		function getSession(){
-			setInterval(check_session, 10000);	
-		}
+		
 	</script>
 	<style type="text/css">		
 		
@@ -119,41 +110,8 @@
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
-			  <!--
-			<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-			<li><a href="#">Link</a></li>
-			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" 
-			  role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-			  <ul class="dropdown-menu">
-				<li><a href="#">Action</a></li>
-				<li><a href="#">Another action</a></li>
-				<li><a href="#">Something else here</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="#">Separated link</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="#">One more separated link</a></li>
-			  </ul>
-			</li>-->
 		  </ul>
-		  <!--<form class="navbar-form navbar-left" role="search">
-			<div class="form-group">
-			  <input type="text" class="form-control" placeholder="Search">
-			</div>
-			<button type="submit" class="btn btn-default">Submit</button>
-		  </form>
-		  <ul class="nav navbar-nav">
-				  <li class="active"><a href="#">Home</a></li>
-				  <li><a href="#">Page 1</a></li>
-				  <li><a href="#">Page 2</a></li> 
-		  </ul>-->
 		  <ul class="nav navbar-nav navbar-right">
-			<li>
-				<a href="#">
-					  <span class="glyphicon glyphicon-user"></span>
-					   Edit Profiles
-				</a>
-			</li>
 			<li>
 				<a href="#" data-toggle="modal" data-target="#logoutConfirmation" >
 					  <span class="glyphicon glyphicon-log-out"></span>&nbsp;logout</a>
@@ -173,7 +131,7 @@
 				</div>
 			</center>
 			
-            <ul class="sidebar-nav" style='height:100%;overflow:hidden;overflow-y:auto'>
+            <ul class="sidebar-nav" style='overflow:hidden;overflow-y:auto'>
 				<br/>
 				<li class="sidebar-brand">
 				</li>
@@ -205,7 +163,7 @@
 					<a href="#" data-toggle="modal" data-target="#create_tab_modal"
 						onclick='refresh_all_entries();
 								getOUandRole("choose_org","ou_selector","role_selector","createTabResponse");'>
-						Create a tab</a><!--getRoles("role_selector",$("#ou_selector").val(),"createTabResponse");-->
+						Create a tab</a>
 				</li>
 					
 				<li>
@@ -225,8 +183,8 @@
 				
 				<li><a href="#" data-toggle="modal" data-target="#associate_tabs_to_role">
 					Associate Tabs to Role</a></li>
-				<li><a href="#" data-toggle="modal" data-target="#createTemplateDialog">Create Tabs template</a></li>
-				<li><a href="#" data-toggle="modal" data-target="#createTemplateDialog">&nbsp;</a></li>
+				<li><a></a></li>
+				<li><a></a></li>
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -236,42 +194,24 @@
 			<div class="container-fluid">
             <div class="box">	
 				<div class="headLine">
-							Organisations
-							<!--
-							style="max-height: 550px;min-height:300px;overflow: hidden;overflow-y: auto;
-											-webkit-align-content: center; align-content: center;padding-top:0px"
-							<form class="navbar-form navbar-right">
-								<input type="text" class="form-control" placeholder="Search...">
-								<button type="button" class="btn btn-default">
-									 <span class="glyphicon glyphicon-search"></span>
-								</button>
-							</form>-->
+					Organisations
 				</div>
 				<div>
 					<table  class='table table-striped' cellspacing="20" 
 							id="showOrgsList" border='0' style="padding-top:20px">
 							<script>
 								$(document).ready(function(){									
-									document.getElementById("showOrgsList").innerHTML="<br/><br/><center><img src='img/loading_data.gif'/></center>";
+									document.getElementById("showOrgsList").innerHTML="<br/><br/><center>"+
+									"<img src='img/loading.gif'/></center>";
 									viewOrgs("list","showOrgsList","all");
 								});
 							</script>	
 					</table>
-				</div>
-					<!--<div class="pull-right">
-						<Button type="button" id="viewAllOrgLists" class="btn btn-link">VIEW ALL</Button>
-					</div>	-->	
-					<div> &nbsp; </div>			
+				</div>	
+				<div> &nbsp; </div>			
 			</div>
 			<div class="box">
 				<div class="headLine">Organisation Units
-							<!--
-							<form class="navbar-form navbar-right">
-								<input type="text" class="form-control" placeholder="Search...">
-								<button type="button" class="btn btn-default">
-								  <span class="glyphicon glyphicon-search"></span>
-								</button>
-							</form>-->
 				</div>
 				<div>		
 					<table  class='table table-striped' cellspacing="20" 
@@ -279,23 +219,18 @@
 						id="showOrgUnits" border="0" style="padding-top:20px">
 						<script>
 								$(document).ready(function(){
-									document.getElementById("showOrgUnits").innerHTML="<br/><br/><center><img src='img/loading_data.gif'/></center>";
+									document.getElementById("showOrgUnits").innerHTML="<br/><br/><center>"+
+									"<img src='img/loading.gif'/></center>";
 									viewOrgUnits("list","showOrgUnits","all");
 								});					
 						</script>	
 					</table>
 				</div>			
-					<!--<div class="pull-right">
-						<Button type="button" id="viewAllOrgUnitLists" class="btn btn-link">VIEW ALL</Button>
-					</div>-->
 				<div> &nbsp; </div>	
 			</div>
 			</div>
         </div>
-        <!-- /#page-content-wrapper -->
-
-    </div>
-    <!-- /#wrapper -->
+     </div>
 
 <!--- popup start for each one -->
 <!-- Modal for create Organization -->
@@ -318,12 +253,6 @@
 									<input type="text" class="form-control" value="" name="orgname" id="orgname" placeholder="Organization name">
 								</div>
 							</div>
-							<!--<div class="form-group">
-								<label for="display_name" class="col-sm-4  control-label">Display Name</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control" value="" placeholder="Display Name" name="display_name" id="display_name">
-								</div>
-							</div>-->
 						</div>
 						<div class="panel-footer clearfix">
 							<label id="error1" class="col-sm-offset-2 col-sm-8"></label>
@@ -353,12 +282,6 @@
 									<input type="text" class="form-control" value="" id="orgunit" name="orgunit" placeholder="Organization name" required>
 								</div>
 							</div>
-							<!--<div class="form-group">
-								<label for="displaynameunit" class="col-sm-4  control-label">Display Name</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control" value="" id="displaynameunit"  placeholder="Display Name" required>
-								</div>
-							</div>-->
 							<div class="form-group">
 								<label class="col-sm-6  control-label">Organization</label>
 								<div class="col-sm-6">
@@ -405,11 +328,6 @@
 					<div id="role_lists">
 						
 					</div>
-					<!--<h3 align="center"> 
-					<a href="#" data-toggle="collapse" class='btn btn-link' data-target="#create_role_collapsible">
-					<span class="glyphicon glyphicon-plus"></span> Click here to create a new role</a></h3>-->
-					
-					<!--<div id="create_role_collapsible" class="collapse">-->
 						<div class="panel panel-default">
 							<div class="panel-body">
 								<div class="form-group">
@@ -434,11 +352,11 @@
 										<select class="form-control" id="select_org_for_role">
 											<script type="text/javaScript">
 												$(document).ready(function(){
-													viewOrgs("dropdown","select_org_for_role","all");
-													
+													//viewOrgs("dropdown","select_org_for_role","all");
+													viewOrgListWithOUs("select_org_for_role","select_ou_4_role","error3");
 													$("#select_org_for_role").change(function(){
 														var org = $("#select_org_for_role").val();
-														getOUlists(org,"select_ou_4_role");
+														get_list_of_OUs(org,"select_ou_4_role","error3");
 													});
 												});
 											</script>
@@ -449,26 +367,16 @@
 									<label class="col-sm-4  control-label">OU Specific</label>
 									<div class="col-sm-4">
 										<label class="radio-inline"><input type="radio" name="optradio" 
-											onclick="disp_ou_selector();" id="access_yes">Yes</label>
+											 id="access_yes" checked>Yes</label>
 										<label class="radio-inline"><input type="radio" name="optradio" 
-											onclick="hide_ou_selector();" id="access_no">No</label>
-										<script type="text/JavaScript">
-											function disp_ou_selector(){
-												document.getElementById("ou_section_for_creating_role").innerHTML=""+
-												"<label class='col-sm-4 control-label'>Select an OU:</label>"+
-												"<div class='col-sm-8'>"+
-													"<select class='form-control' id='select_ou_4_role'></select>"+
-												"</div>";
-												var org = $("#select_org_for_role").val();
-												getOUlists(org,"select_ou_4_role");
-											}
-											function hide_ou_selector(){
-												document.getElementById("ou_section_for_creating_role").innerHTML=" ";
-											}	
-										</script>
+											 id="access_no">No</label>
 									</div>
 								</div>
 								<div class="form-group" id="ou_section_for_creating_role">
+									<label class='col-sm-4 control-label'>Select an OU:</label>
+									<div class='col-sm-8'>
+										<select class='form-control' id='select_ou_4_role'></select>
+									</div>
 								</div>
 							</div>
 							<div class="panel-footer clearfix">
@@ -632,7 +540,7 @@
 						<div class="form-group">
 							<label class="col-sm-4  control-label">Choose a Template:</label>
 							<div class="col-sm-8">
-								<select class="form-control" id="choose_templates" >
+								<select class="form-control" id="choose_templates">
 									<script type="text/JavaScript">
 										$(document).ready(function(){
 											setTemplateList("choose_templates");
@@ -662,9 +570,9 @@
 							<label class="col-sm-4  control-label">OU Specific:</label>
 							<div class="col-sm-8">
 								<label class="radio-inline"><input type="radio" name="optradio" 
-									id="ou_specific_yes" checked>Yes</label><!--onclick="disp_ou_role_selector_region();" -->
+									id="ou_specific_yes" checked>Yes</label>
 								<label class="radio-inline"><input type="radio" name="optradio" 
-									id="ou_specific_no">No</label><!--onclick="hide_ou_role_selector_region();"-->
+									id="ou_specific_no">No</label>
 							</div>
 						</div>
 						<script type="text/JavaScript">
@@ -679,8 +587,6 @@
 													"<div class='col-sm-8'>"+
 														"<select class='form-control' id='role_selector'></select>"+
 													"</div>";
-								/*var org = $("#choose_org").val();
-								getOUlists(org,"ou_selector");*/
 								
 							}
 							function hide_ou_role_selector_region(){
@@ -739,7 +645,6 @@
 								<select class="form-control" id="choose_org_tabstrip">
 									<script type="text/JavaScript">
 										$(document).ready(function(){
-											//viewOrgs("dropdown","choose_org_tabstrip","all");
 											viewOrgListWithOUsRoles("choose_org_tabstrip","tabstrip_ou_selector",
 											"tabstrip_role_selector","createTabstripResponse");
 											$("#choose_org_tabstrip").change(function(){
@@ -774,9 +679,9 @@
 							<label class="col-sm-4  control-label">OU Specific:</label>
 							<div class="col-sm-8">
 								<label class="radio-inline"><input type="radio" name="optradio" 
-									id="tabstrip_ou_specific_yes" checked>Yes</label><!--onclick="disp_ou_role_selector_region();" -->
+									id="tabstrip_ou_specific_yes" checked>Yes</label>
 								<label class="radio-inline"><input type="radio" name="optradio" 
-									id="tabstrip_ou_specific_no">No</label><!--onclick="hide_ou_role_selector_region();"-->
+									id="tabstrip_ou_specific_no">No</label>
 							</div>
 						</div>
 					</div>	
@@ -818,8 +723,8 @@
 									<select class="form-control" id="org_lists">
 										<script type="text/JavaScript">
 											$(document).ready(function(){
-												//viewOrgs("dropdown","org_lists","all");
 												viewOrgListWithOUsRoles("org_lists","choose_ou","choose_role","associated_tabs");
+												/*onchange effect of the dropdown Organisation list items*/
 												$("#org_lists").change(function(){
 													var org_name=($("#org_lists").val()).trim();
 													$.ajax({
@@ -887,10 +792,43 @@
 										<script type="text/JavaScript">
 											$(document).ready(function(){
 												viewOrgUnits("dropdown","choose_ou","all");
-												//getAssociatedTabs("associated_tabs");
+												
 												$("#choose_ou").change(function(){
-													getRoles("choose_role",$("#choose_ou").val(),"associated_tabs");
-													validate_and_get_tabs();
+													
+													var org_name=($("#org_lists").val()).trim();
+													var orgunit=($("#choose_ou").val()).trim();
+													$.ajax({
+														type:"GET",
+														url: "getRoles.php",
+														data: "org="+org_name+"&org_unit="+orgunit+"&only_ou_roles=no",
+														success: function(data){
+															if(data.trim()=="false"){
+																document.getElementById("choose_role").innerHTML="<option></option>";
+																document.getElementById("associated_tabs").innerHTML="<center>No role exists.</center>";
+																document.getElementById("associated_tabs").style.color="red";
+															}
+															else{
+																document.getElementById("associated_tabs").innerHTML=" ";
+																var arr = JSON.parse(data);
+																role_list = JSON.parse(data);
+																var roleList=" ";
+																var i;
+																var count=0;
+																for(i=0;i<arr.length;i++){
+																	roleList+="<option>"+arr[i].RoleName+"</option>";
+																	count++;
+																}
+																document.getElementById("choose_role").innerHTML=roleList;
+																validate_and_get_tabs();
+																getAssociatedTabs("associated_tabs");
+															}
+														},
+														error: function(x,y,z){
+															document.getElementById("choose_role").innerHTML="<option></option>";
+															document.getElementById("associated_tabs").innerHTML="<center>Sorry! Unable to get server.</center>";
+															document.getElementById("associated_tabs").style.color="red";
+														}
+													});
 												});
 											});
 										</script>
@@ -904,11 +842,12 @@
 											<table width="100%">
 												<tr>
 													<td><h1 class="panel-title">Associated Tabs</h1></td>
-													<td align="right">
-														<Button type="button" class="btn btn-info" id="refresh_ass_tab">REFRESH
+													<!--<td align="right">
+														<Button type="button" class="btn btn-info" id="refresh_ass_tab">
+															RELOAD
 															<span class="glyphicon glyphicon-refresh"></span>
 														</Button>
-													</td>
+													</td>-->
 												</tr>
 											</table>		
 										</div>
@@ -918,7 +857,6 @@
 													<select id="choose_role" class="form-control">
 															<script type="text/JavaScript">
 																$(document).ready(function(){
-																	//getRoles("choose_role",$("#choose_ou").val());
 																	$("#choose_role").change(function(){
 																		getAssociatedTabs("associated_tabs");
 																		validate_and_get_tabs();
@@ -936,7 +874,6 @@
 										</div>
 										<script type="text/JavaScript">
 											$(document).ready(function(){
-												//getAssociatedTabs("associated_tabs");
 												$("#associated_tabs").html("<h3 align='center'>Click Refresh button "+
 												"<br/> to display all the associated tabs</h3>");
 																								
@@ -958,7 +895,7 @@
 														getAssociatedTabs("associated_tabs");
 													}
 													return false;
-													//alert("Hi");
+													
 												});
 											});
 										</script>
@@ -970,12 +907,14 @@
 											<table width="100%">
 												<tr>
 													<td><h1 class="panel-title">Available Tabs</h1></td>
+													<!--
 													<td align="right">
 														<div class="pull-right">
-															<Button type="button" class="btn btn-info" id="refresh_tab_list">REFRESH
+															<Button type="button" class="btn btn-info" 
+															id="refresh_tab_list">RELOAD
 															<span class="glyphicon glyphicon-refresh"></span></Button>
 														</div>
-													</td>
+													</td>-->
 												</tr>
 											</table>		
 										</div>
@@ -1003,13 +942,12 @@
 											<table class="table table-striped" id="list_of_tabs">
 											<script type="text/JavaScript">
 												$(document).ready(function(){
-													//getTabs("list_of_tabs");
+													
 													$("#list_of_tabs").html("<h3 align='center'>Click Refresh button "+
 													"<br/>"+
 													" to display all the list of tabs</h3>");
 													$("#list_of_tabs").css('color','#A4A4A4');
-													$("#refresh_tab_list").click(function(){
-														//getTabs("list_of_tabs");
+													$("#refresh_tab_list").click(function(){	
 														validate_and_get_tabs();
 													});
 												});
@@ -1056,7 +994,7 @@
 							}
 							function getTabStrips(org_name,ou_name,target_layout_id,resp_layout){
 								var ou_specific = document.getElementById("ou_specific_tabstrip_yes").checked;
-								//alert("OU Name: "+ou_name+" OU_specific: "+ou_specific);
+								
 								if(ou_specific==true){
 									var ou_trim = ou_name.trim();
 									if(ou_trim.length==0 || ou_name==null){
@@ -1068,7 +1006,6 @@
 									else{
 										document.getElementById(resp_layout).innerHTML="<center></center>";
 									}
-									//alert("OU name: "+ou_name);
 								}
 								$.ajax({
 									type: "POST",
@@ -1087,7 +1024,7 @@
 											var layout="";
 											for(var i=0;i<output.length;i++){
 												var tabstrip_id = output[i].Id;
-												//var tabs_to_be_added = "tabs_to_be_added";
+												
 												layout+="<tr><td><button class='btnSubmit' onclick='getUnaddedTab(\""+org_name+
 												"\",\""+ou_name+"\",\""+ou_specific+"\",\""+tabstrip_id+"\",\""+
 												"tabs_to_be_added"+"\");getAddedTab(\""+org_name+
@@ -1099,10 +1036,12 @@
 									}
 								});
 							}
+							
+							/*effect on tabstrip layout*/
 							function onChangeOU(){
 								var org = document.getElementById("myorgselect").value;
 								var ou = document.getElementById("myouselect").value;
-								//alert(ou);
+								
 								getTabStrips(org,ou,"tabstrip_lists","result_for_add_tab_to_tabstrip");
 								document.getElementById("tabs_to_be_added").innerHTML="<div><center></center></div>";
 								document.getElementById("tabs_added").innerHTML="<div><center></center></div>";
@@ -1174,31 +1113,19 @@
 	<div class="modal-dialog modal-lg" role="document" style="min-height:60%;overflow-x:auto;min-width:70%">
 		<div class="modal-content">
 			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
 				<h4 class="modal-title" id="myModalLabel">List of Users Created:
-					<div class="pull-right">
-						<form method="GET">
-						<table width="100%">
-							<tr>
-								<td><h4>Find a user: &nbsp;</h4></td>
-								<td>
-									<input type="text" class="form-control" id="search_user" onkeyup="find()" 
-										placeholder="Type a Username Here"/>
-								</td>
-								<td>
-									<button type="submit" class="btn btn-default" id="findUser">
-									<span class="glyphicon glyphicon-search"></span>
-									</button>
-								</td>
-								<td>&nbsp;&nbsp;&nbsp;</td>
-								<td>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<span class="glyphicon glyphicon-remove"></span>
-									</button>
-								</td>
-							</tr>
-						</table>
-						</form>
-					</div>
+				<div class="pull-right">
+					<form class="navbar-form navbar-left" method="GET">
+						<input type="text" id="search_user" onkeyup="find()" 
+									class="form-control" placeholder="Search a user">
+						<button type="submit" class="btn btn-default" id="findUser">
+							 <span class="glyphicon glyphicon-search"></span> Search 
+						</button>	
+					</form>	
+				</div>	
 				</h4>
 			</div>
 			<div class="modal-body"
@@ -1217,13 +1144,12 @@
 								else {
 									findUsers("user_display_content",user_name);
 								}
-								$("#view_all_users_display").html("<Button class='btn btn-default' "+
-										"id='view_all_users' onclick='getAll()';>VIEW ALL</Button>");
+								$("#view_all_users_display").html("<Button class='btn btn-success' "+
+										"id='view_all_users' onclick='getAll()';>VIEW ALL USERS</Button>");
 							}
 							$(document).ready(function(){
 								getAllUsers("user_display_content");
 								$("#findUser").click(function(){
-									$("#user_display_content").html("<center><p>Wait Please...</p></center>");
 									find();
 									return false;
 								});
@@ -1236,7 +1162,7 @@
 							}
 						</script>
 					<div id="user_display_content" style="max-width:100%; min-height:50%; overflow:hidden;overflow-x:auto">
-								Content goes here....
+						Content goes here....
 					</div>	
 			</div>
 			<div class='modal-footer'>
@@ -1248,7 +1174,7 @@
 
 <!-- Modal for displaying tabs -->
 <div class="modal fade" id="display_tab_layout" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-	<div class="modal-dialog" style="width:60%" role="document">
+	<div class="modal-dialog"  role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1256,8 +1182,8 @@
 				</button>
 				<h4 class="modal-title" id="myModalLabel">List of Tabs created:</h4>
 			</div>
-			<div class="modal-body">
-				<table class='table' id="get_all_tabs">
+			<div class="modal-body" style="height:600px;overflow:hidden;overflow-y:auto;">
+				<table style='width:100%;' id="get_all_tabs">
 					<script type="text/JavaScript">
 						$(document).ready(function(){
 							getAllTabs("get_all_tabs");
@@ -1286,12 +1212,11 @@
 					</script>
 					<form name='logout_form' method='POST' action='logout.php'>
 						<span id='token_span'></span>
-						<button type="button" style='width:45%' class="btn btn-default" data-dismiss="modal" aria-label="Close">No</button>
+						<button type="button" style='width:45%' class="btn btn-default" data-dismiss="modal" 
+						aria-label="Close">NO</button>
 						&nbsp;&nbsp;
 						<button type="submit" style='width:45%' onclick="removeSession();"
-						class="btn btn-default" id="YesLogout">Yes</button>
-						<!--<a href="logout.php"  style='width:45%' class="btn btn-default" onclick="removeSession();"
-						style="width:20%" id="YesLogout">Yes</a>-->
+						class="btn btn-default" id="YesLogout">YES</button>
 					</form>
 				</center>
 			</div>	

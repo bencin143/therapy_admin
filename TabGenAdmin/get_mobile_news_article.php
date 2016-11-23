@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+/*mobile responsive web view of a particular news article. Only for mobile app*/
 $news_id = $_GET['news_id'];
 if(!empty($news_id)){
 		include('connect_db.php');
@@ -10,7 +11,7 @@ if(!empty($news_id)){
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
-		<link rel="stylesheet" type="text/css" href="css/my_custom_style.css">
+		<!--<link rel="stylesheet" type="text/css" href="css/my_custom_style.css">-->
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 		
@@ -19,13 +20,8 @@ if(!empty($news_id)){
 		<script type="text/javascript" src="js/toast.js"></script>
 		<!-- ********************************************** -->
 		
-		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<!-- This is what you need for sweet alert -->
-		<script src="dist/sweetalert-dev.js"></script>
-		<link rel="stylesheet" href="dist/sweetalert.css">
-		<!--.......................-->
+
 		
 		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
@@ -45,26 +41,20 @@ if(!empty($news_id)){
 				$row=$res->fetch(PDO::FETCH_ASSOC);
 				echo "<div class='headline'><h1>".$row['headline']."</h1></div>";
 				if($row['Image']!=null){
-					echo "<center><img class='img-thumbnail' src='".$row['Image']."'/></center>";
+					echo "<center><img width='100%' height='80%' src='".$row['Image']."'/></center>";
 				}
 				echo $row['Details'];
 				$link=$row['Link'];
 				if($link!=null && $link!=""){			
 					if(getYouTubeID($link)!=null){
 						$video_id=getYouTubeID($link);
-						echo "<iframe class='embed-responsive-item' 
-								allowfullscreen='true' src='https://www.youtube.com/embed/".$video_id."?autoplay=0'></iframe>";
+						echo "<div class='videoWrapper'><iframe allowfullscreen='true' 
+						src='https://www.youtube.com/embed/".$video_id."?autoplay=0'></iframe></div>";
 					}
 					else{
 						//echo curl($link);
 						header('Location: '.$link);
 					}
-				}
-				$attachment=getFiles($conn,$row['Id']);
-				for($i=0;$i<sizeof($attachment);$i++){
-					echo "<div class='col-sm-4'><a href='".$attachment[$i]['attachment_url']."' target='_blank' download>
-					<img height='50px' width='50px' src='".$attachment[$i]['file_icon']."'/>
-					".$attachment[$i]['file_name']."</a></div>";
 				}
 			}
 		?>

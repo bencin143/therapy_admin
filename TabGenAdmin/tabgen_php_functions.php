@@ -8,7 +8,6 @@ function create_tab($conn,$tab_name,$template_id,$createdBy,$ou_specific){
 	$org_name=$_POST['org_name'];
 	$ou_name = $_POST['ou_name'];
 	$role_name = $_POST['role_name'];
-	//$role_id = findRoleId($conn,$ou_name,$role_name);
 	$role_id = $_POST['role_id'];
 	$flag = $ou_specific == "true"?1:0;
 		
@@ -65,7 +64,7 @@ function randId($length){
 	}
 	return $rand;
 }
-	/* function to find number of tabs of a particular role*/
+/* function to find number of tabs of a particular role*/
 function existingNoOfTabs($roleName,$org_unit,$conn){
 	$res = $conn->query("SELECT COUNT(*) AS NO_OF_TABS 
 							FROM Tab,Role 
@@ -167,11 +166,6 @@ function getParentOuId($conn,$ou_id){
 }
 // function to get OU Id (which the user belong) by providing user Id
 function getOuIdByUserId($conn,$user_id){
-	/*$query="select Users.Id as user_id,Users.Username,Teams.Id as Team_id,Teams.Name as team_name,OrganisationUnit.Id as org_unit_id,OrganisationUnit.OrganisationUnit
-			from Users,Teams,OrganisationUnit
-			where Teams.Id=Users.TeamId 
-			and Teams.Name=OrganisationUnit.OrganisationUnit
-			and Users.Id='$user_id'";*/
 	$query = "select * from User_OU_Mapping where user_id='$user_id'";
 	$res = $conn->query($query);
 	$row = $res->fetch(PDO::FETCH_ASSOC);
@@ -187,13 +181,6 @@ function getRoleByUserId($conn,$user_id){
 
 //function to find role id by user id
 function findRoleIdByUser_id($conn,$user_id){
-	/*$query="select Role.Id as role_id,Roles,OrganisationUnit.OrganisationUnit
-	from Users,User_OU_Mapping,OrganisationUnit,Role
-	where Users.Id=User_OU_Mapping.user_id and
-		OrganisationUnit.Id=User_OU_Mapping.OU_id and
-		Role.RoleName=Roles and
-		Role.OrganisationUnit=OrganisationUnit.OrganisationUnit and 
-		Users.Id='$user_id'";*/
 	$query = "select * from User_OU_Mapping where user_id='$user_id'";
 	$res = $conn->query($query);
 	if($res){
@@ -232,10 +219,7 @@ function getTeams($conn,$user_id){
 	}
 	else{		
 		$ou_id = getOuIdByUserId($conn,$user_id);
-		$my_team = getTeamByOUId($conn,$ou_id);	
-		/*,array("team_name"=>$parent_team)
-		$parent_ou_id=getParentOuId($conn,$ou_id);
-		$parent_team =getTeamByOUId($conn,$parent_ou_id);*/	
+		$my_team = getTeamByOUId($conn,$ou_id);		
 		$output= array(array("team_name"=>$my_team));
 	}
 	return $output;
@@ -276,8 +260,6 @@ function getOUs($conn,$user_id){
 			}
 		}
 	}
-	//$output= array(array("team_name"=>$my_ou));
-	//echo "OU: ".$my_ou;
 	return $output;
 }
 
@@ -288,6 +270,13 @@ function getOU_Byuser_Id($conn,$user_id){
 				FROM User_OU_Mapping,OrganisationUnit
 				WHERE OU_id=OrganisationUnit.Id
 				and user_id='$user_id'";
+	$res = $conn->query($query);
+	$row = $res->fetch(PDO::FETCH_ASSOC);
+	return $row['OrganisationUnit'];
+}
+//function to get OU name by tab name
+function getOU_by_tab_Name($conn,$tab_name){
+	$query = "select OrganisationUnit from Tab where Name='$tab_name'";
 	$res = $conn->query($query);
 	$row = $res->fetch(PDO::FETCH_ASSOC);
 	return $row['OrganisationUnit'];
@@ -422,9 +411,20 @@ function isTabstripExist($conn,$tabstrip_name){
 	}
 }
 
-
-
 function getUserNameById($conn,$user_id){
+	$name=null;
+	$query = "select * from Users where Id='$user_id'";
+	$res = $conn->query($query);
+	$row = $res->fetch(PDO::FETCH_ASSOC);
+	/*if($row['FirstName']!=null)
+		$name=$row['FirstName'];
+	else */
+	if($row['Username']!=null)
+		$name=$row['Username'];
+	return $name;
+}
+
+function getUserDisplayNameById($conn,$user_id){
 	$name=null;
 	$query = "select * from Users where Id='$user_id'";
 	$res = $conn->query($query);
@@ -462,18 +462,14 @@ function getUserNameById($conn,$user_id){
 	}
 	
 	//function to delete a tab along with channels 
-	function deleteATab($conn,$tab_id){
+	function deleteATab($conn,$tab_id,$token_id){
 		$tab_details = getTabWithTemplate($conn,$tab_id);
 			if($tab_details['Template_Name']=="Chat Template"){
-				$token_id = get_token();
-				//echo json_encode(array("status"=>false,"message"=>$token_id));
 				if($token_id!=null){
 					/*getting channel details for the channel having same name as the earlier tab name*/
 					$tab_name=$tab_details['Name'];
 					$channel_details = getChannelByName($conn,$tab_name);//this returns null of the channel does not exists
-					if($channel_details!=null){
-						/* it means a channel already exists with the same name as tab name, so we are going to delete that channel name
-						with the new tab name.	*/		
+					if($channel_details!=null){			
 						
 						$delete_channel_data = null;
 											
@@ -493,28 +489,24 @@ function getUserNameById($conn,$user_id){
 					}else{
 						return json_encode(array("status"=>false,"message"=>"No channel exists with the earlier tab name"));
 					}
-					
 				}
 				else{
-						return json_encode(array("status"=>false,"message"=>"Token not found. Login again."));
+					return json_encode(array("status"=>false,"message"=>"Token not found. Login again."));
 				}
 						
 			}
-			else if($tab_details['Template_Name']=="Latest News Template"){
-				$query = "delete from News where title=(select Name from Tab where Id='$tab_id')";
-				if($conn->query($query)){
-					return deleteTab($conn,$tab_id);
-				}
-			}else{
+			else{
 				//deleting Tabs which is not chat template
 				return deleteTab($conn,$tab_id);
 			}
 		
 	}
-	//this function will modify tabs in Table
+	//this function will delete a tab from the table in database
 	function deleteTab($conn, $tab_id){
 		$time = time()*1000;
+		/*delete all the tuples from the role and tab association where tab id is $tab_id*/
 		$query1 = "delete from RoleTabAsson where TabId='$tab_id'";
+		/*setting DeleteAt time of a tab*/
 		$query2 = "update Tab set DeleteAt='$time' where Id='$tab_id'";
 		if($conn->query($query1) && $conn->query($query2)){	
 			return json_encode(array("status"=>true,"message"=>"Successfully deleted"));
@@ -524,57 +516,95 @@ function getUserNameById($conn,$user_id){
 		}		
 	}
 	
-	//function to delete an organisation unit
-	
-	function deleteOU($conn,$org_unit_id){
-		$ou_name=getOUNameByOuId($conn,$org_unit_id);
-		$time = time()*1000;
-		$res1=$conn->query("update Users set DeleteAt='$time' where Id in (select user_id 
-							from User_OU_Mapping where OU_id='$org_unit_id')");
-		if($res1){
-			$res2=$conn->query("delete from User_OU_Mapping where OU_id = '$org_unit_id'");
-			if($res2){
-				$query="delete from OrganisationUnit where OrganisationUnit.Id='$org_unit_id'";
-				$res3 = $conn->query($query);					
-				if($res3){	
-					/*$conn->query("update Tab set DeleteAt='$time' 
-								where RoleId in (select Id from Role where OrganisationUnit='$ou_name')");*/
-					$result=$conn->query("select Id from Tab where RoleId in 
-					(select Id from Role where OrganisationUnit='$ou_name')");
-					if($result){	
-						while($row=$result->fetch(PDO::FETCH_ASSOC)){
-							deleteATab($conn,$row['Id']);
-						}	
-					}			
-					$conn->query("Update Role set DeleteAt='$time' where OrganisationUnit='$ou_name'");
-					
-					$conn->query("delete from RoleTabAsson 
-									where TabId in (select Id from Tab where DeleteAt!=0)
-									OR RoleId in (select Id from Role where DeleteAt!=0)");
-					return true;
-				}
-				else return false;
-			}
-			else{ 
-				return false;
-			}
-		}
-		else return false;
-	}
-	
 	//function to update first name (display name)
 	function updateUserFirstName($conn,$user_id,$display_name){
 		$query = "update Users set FirstName='$display_name' where Id='$user_id'";
 		$conn->query($query);
 	}
 	
-	//function to get number of replies
+	//function to get number of replies of a message
 	function getNoOfReplies($conn,$post_id){
 		$query = "select count(*) as no_of_replies from Posts where RootId='$post_id'";
 		$res=$conn->query($query);
 		$row = $res->fetch(PDO::FETCH_ASSOC);
 		return (int)$row['no_of_replies'];
 	}
+	
+	/*****************************LIKE FUNCTIONALITIES OF AN ARTICLE**************************************/
+	
+	//function to check whether the user has already liked the article or not
+	function isArticleAlreadyLiked($conn,$article_id,$user_id){
+		$query = "select count(*) as count from LikeArticle where article_id='$article_id' and user_id='$user_id'";
+		$res = $conn->query($query);
+		$row = $res->fetch(PDO::FETCH_ASSOC);
+		if((int)$row['count']>0)//checks for existence of row
+			return true;
+		else
+			return false;
+	}
+	//function to dislike an article
+	function dislikeAnArticle($conn,$article_id,$user_id){
+		$query = "delete from LikeArticle where article_id='$article_id' and user_id='$user_id'";
+		$res = $conn->query($query);
+		return $res;
+	}
+
+	//function to like an article
+	function likeAnArticle($conn,$article_id,$user_id){
+		$query = "insert into LikeArticle values('$article_id','$user_id')";
+		$res = $conn->query($query);
+		return $res;
+	}
+	//function to count the number of likes for a particular article
+	function getNoOfLikesOfArticle($conn,$article_id){
+		$query = "select count(*) as count from LikeArticle where article_id='$article_id'";
+		$res = $conn->query($query);
+		$row = $res->fetch(PDO::FETCH_ASSOC);
+		return (int)$row['count'];
+	}
+	/***********************END OF LIKE FUNCTIONALITIES OF AN ARTICLE**************************/
+	
+	
+	/****************************BOOKMARK FUNCTIONALITIES OF AN ARTICLE************************/
+	//function to bookmark an article
+	function bookmarkAnArticle($conn,$article_id,$user_id){
+		if(isArticleAlreadyBookmarked($conn,$article_id,$user_id)){
+			return true;//in case if the article has already been bookmarked
+		}
+		else{
+			$query = "insert into BookmarkArticle values('$article_id','$user_id')";
+			$res = $conn->query($query);
+			return $res;
+		}
+	}
+	
+	//function to check whether an article has already been bookmarked by a user or not
+	function isArticleAlreadyBookmarked($conn,$article_id,$user_id){
+		$query="select count(*) as count from BookmarkArticle where article_id='$article_id' and user_id='$user_id'";
+		$res = $conn->query($query);
+		$row = $res->fetch(PDO::FETCH_ASSOC);
+		if((int)$row['count']>0)//check for existence of row
+			return true;//in case if row exists
+		else
+			return false;//in case if row does not exist
+	}
+	
+	//function to unbookmark an article
+	function unbookmarkAnArticle($conn,$article_id,$user_id){
+		if(isArticleAlreadyBookmarked($conn,$article_id,$user_id)){
+			//in case if the article has already been bookmarked, then remove the article from the bookmarked list of the user
+			$query = "delete from BookmarkArticle where article_id='$article_id' and user_id='$user_id'";
+			$res = $conn->query($query);
+			return $res;
+		}
+		else{
+			return true;
+		}
+	}
+	/***********************END OF BOOKMARK FUNCTIONALITIES OF AN ARTICLE**********************/
+	
+	
+	/*****************************LIKE FUNCTIONALITIES OF A POST**************************************/
 	
 	//function to check whether the user has already liked the post or not
 	function isAlreadyLiked($conn,$post_id,$user_id){
@@ -587,7 +617,7 @@ function getUserNameById($conn,$user_id){
 			return false;
 	}
 
-	//function to unlike a post
+	//function to dislike a post
 	function dislikeAPost($conn,$post_id,$user_id){
 		$query = "delete from Likes where post_id='$post_id' and user_id='$user_id'";
 		$res = $conn->query($query);
@@ -609,12 +639,15 @@ function getUserNameById($conn,$user_id){
 		return (int)$row['count'];
 	}
 	
+	/***********************END OF LIKE FUNCTIONALITIES OF A POST**************************/
+	
+	
+	/***********************BOOKMARK FUNCTIONALITIES OF A POST******************************/
 	//function to add bookmark
 	function addBookmark($conn,$post_id,$user_id){
 		//check if the post has already been bookmarked or not
 		if(!isAlreadyBookmarked($conn,$post_id,$user_id)){
 			//in case if the post has not already been bookmarked
-			//$title = $_POST['title'];//title of the bookmark
 			$time = time()*1000;
 			$id = randId(26);
 			$query="insert into Bookmark(Id,PostId,UserId,BookmarkAt) 
@@ -651,7 +684,8 @@ function getUserNameById($conn,$user_id){
 		else
 			return false;//in case if row does not exist
 	}
-	//function to get a list of bookmarks
+	
+	//function to get a list of bookmarked post
 	function getBookmarks($conn,$user_id){
 		$query="select Posts.* from Bookmark,Posts 
 				where Posts.Id=Bookmark.PostId
@@ -683,6 +717,8 @@ function getUserNameById($conn,$user_id){
 		return json_encode($output);
 	}
 	
+	/***********************END OF BOOKMARK FUNCTIONALITIES OF A POST**************************/
+	
 	//function to find the number of members in a particular channel
 	function getMembersCount($conn,$channel_id){
 		$query="select count(*) as members_count from ChannelMembers where ChannelId='$channel_id'";
@@ -697,6 +733,13 @@ function getUserNameById($conn,$user_id){
 		$res = $conn->query($query);
 		$row = $res->fetch(PDO::FETCH_ASSOC);
 		return $row['ChannelId'];
+	}
+	
+	function getChannelNameById($conn,$channel_id){
+		$query="select DisplayName from Channels where Id='$channel_id'";
+		$res = $conn->query($query);
+		$row = $res->fetch(PDO::FETCH_ASSOC);
+		return $row['DisplayName'];
 	}
 	
 	//function to get OU by role
@@ -775,7 +818,48 @@ function getOrgbyOU($conn,$ou){
 	$row = $res->fetch(PDO::FETCH_ASSOC);
 	return $row['Organisation'];
 }
+//get attatched files of an article
 
+function getAttatchment($conn,$article_id){
+	$query = "select Id,caption,file_name from ArticleFiles where article_id='$article_id'";
+	$res = $conn->query($query);
+	$files_output=array();
+	while($row = $res->fetch(PDO::FETCH_ASSOC)){
+		$row['file_type']=getFileType($row['file_name']);
+		$row['attachment_url']="http://".SERVER_IP."/TabGenAdmin/".$row['file_name'];
+		$row['file_name']=substr($row['file_name'],strripos($row['file_name'],"/")+1);
+		$row['caption']=($row['caption']==null)?"":$row['caption'];
+		$files_output[]=$row;
+	}
+	return $files_output;
+}
+
+function getFileType($filename){
+	$ext = pathinfo($filename, PATHINFO_EXTENSION);
+	$file_type="";
+	switch($ext){
+		case "gif": 
+		case "jpeg":
+		case "png":	
+		case "bmp":
+		case "jpg":	$file_type="image";
+					break;
+		case "pdf": $file_type="pdf";
+					break;
+		case "docx":
+		case "doc":	$file_type="word";
+					break;
+		case "pptx":
+		case "ppt":	$file_type="power_point";
+					break;	
+		case "mkv":
+		case "mpeg":
+		case "mp4":	$file_type="video";
+					break;
+		default: 	$file_type="others";	
+	}
+	return $file_type;
+}
 //get list of attached files in an article
 function getFiles($conn,$article_id){
 	$query = "select Id,caption,file_name from ArticleFiles where article_id='$article_id'";
@@ -843,7 +927,7 @@ function isNewsTitleExists($conn,$title){
 			return false;
 	}
 }
-
+/*check if the user is admin or not*/
 function isAdmin($conn,$user_id){
 	$query = "select * from Users where Id='$user_id'";
 	$res = $conn->query($query);
@@ -856,7 +940,7 @@ function isAdmin($conn,$user_id){
 
 /*php function to check whether the user is a valid user or not.*/
 function isValidUser($conn,$user_id){
-	$query = "select count(*) as count from Users where Id='$user_id'";
+	$query = "select count(*) as count from Users where Id='$user_id' and DeleteAt=0";
 	$res = $conn->query($query);
 	$row = $res->fetch(PDO::FETCH_ASSOC);
 	if((int)$row['count']>0){
@@ -883,7 +967,7 @@ function delete_a_file($file_name){
 	}
 }
 
-/*getting the whole contents a website*/
+/*getting the whole contents of a website*/
 function curl($url) {
         $ch = curl_init();  // Initialising cURL
         curl_setopt($ch, CURLOPT_URL, $url);    // Setting cURL's URL option with the $url variable passed into the function
@@ -913,13 +997,7 @@ function http_parse_headers( $header )
 }
 //function to extract token which was stored in session/cookies at the time of login
 function get_token(){
-		session_start();
 		$token=null;
-		/*if(isset($_SESSION['login_header_response'])){
-			$header = $_SESSION['login_header_response'];
-			$token = getTokenFromHeader($header);			
-		}
-		else */
 		if(isset($_COOKIE['login_header_response'])){
 			$header = $_COOKIE['login_header_response'];
 			$token = getTokenFromHeader($header);
@@ -929,7 +1007,7 @@ function get_token(){
 											
 		return $token;
 }
-
+/*parse for token*/
 function getTokenFromHeader($header){
 	$header_array = http_parse_headers($header); 
 	$token = null;				
@@ -959,7 +1037,7 @@ function get_token_from_header(){
 		else return null;
 	}
 }
-
+/*getting user id from token*/
 function getUserIdByToken($conn,$token){
 	$query = "select UserId from Sessions where Token='$token'";
 	$res = $conn->query($query);
@@ -973,7 +1051,6 @@ function getUserIdByToken($conn,$token){
 function getYouTubeID($youtube_url){
 	if(is_youtube_url($youtube_url)){
 	$regex = "/(youtube.com|youtu.be)\/(watch)?(\?v=)?(\S+)?/";
-					/*'![?&]{1}v=([^&]+)!'*/
 	$YouTubeCheck = preg_match($regex, $youtube_url, $Data);
 		If($YouTubeCheck){
 			$VideoID = $Data[4];
@@ -992,5 +1069,55 @@ function getYouTubeID($youtube_url){
 function is_youtube_url($youtube_url){
 	$valid = preg_match("/((http\:\/\/){0,}(www\.){0,}(youtube\.com){1} || (youtu\.be){1}(\/watch\?v\=[^\s]){1})/", $youtube_url);
 	return $valid;	
+}
+
+function get_notification_tokens_for_chat_tabs($conn,$post_id,$user_id){
+	/*
+	  select user_id  from User_OU_Mapping where RoleId in (select RoleId from RoleTabAsson where TabId = (select Id from Tab where Name=(Select DisplayName from Channels,Posts where Channels.Id=ChannelId and Posts.Id='g5tc6rimwid7jkotknmzx3g86o')));
+	*/
+	$query="select token_id, user_id from FCM_Users
+	  where user_id in (select user_id from User_OU_Mapping 
+	  where RoleId in (select RoleId from RoleTabAsson 
+	  where TabId = (select Id from Tab where Name=(Select DisplayName from Channels,Posts 
+	  where Channels.Id=ChannelId and Posts.Id='$post_id'))))";
+	  
+	$res = $conn->query($query);
+	$tokens = array();
+	while($row = $res->fetch(PDO::FETCH_ASSOC)){
+		if($row['user_id']!=$user_id)
+			$tokens[]=$row['token_id'];
+	}
+	return $tokens;
+}
+
+/*FCM Services for sending messages to GOOGLE seerver in php*/
+
+function sendFirebasedCloudMessage($fcm_token, $message) {
+	/*fcm_token is a list of tokens*/
+    $apiKey = 'AIzaSyAnnGIii3XM3HfV5n8WsFatXluNr8bAiSo';
+    
+    $url = 'https://fcm.googleapis.com/fcm/send';
+	 //'https://android.googleapis.com/gcm/send';
+    $fields = array(
+        'registration_ids' => $fcm_token,
+        'data' => $message
+    );
+    $headers = array(
+        'Authorization: key=' . $apiKey,
+        'Content-Type: application/json'
+    );
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, flase);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+    $result = curl_exec($ch);
+    if($result==false){
+		die('Curl failed: '.curl_error($ch));
+	}
+	return $result;   
 }
 ?>
