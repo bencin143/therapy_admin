@@ -1,4 +1,24 @@
-<!DOCTYPE html>
+<?php   
+ //load_data_select.php  
+ $connect = mysqli_connect("139.162.61.60", "mmuser", "mostest", "mattermost_test");  
+ function show_org($connect)  
+ {  
+      $output = '';  
+      $sql = "SELECT * FROM HISConnectivity";  
+      $result = mysqli_query($connect, $sql);  
+      while($row = mysqli_fetch_array($result))  
+      {  
+           $output .= '<option value="'.$row["Id"].'">'.$row["OrganisationName"].'</option>';  
+      }  
+      return $output;  
+ }  
+ 
+ 
+?>
+
+
+
+
 <html>
 <head>
 	<title>Home</title>
@@ -13,6 +33,11 @@
 	<link rel="stylesheet" type="text/css" href="css/my_custom_style.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="js/jquery.min.js"></script>
+        <script src="limo.js"></script>
+        <script src="custom1.js"></script>
+        <script src="custom3.js"></script>
+        <script src="custom4.js"></script>
+  
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/npm.js"></script>
 	<!-- This is what you need for sweet alert -->
@@ -75,6 +100,57 @@
 		}
 		
 	</script>
+         <script type="text/javascript">
+jQuery(document).ready(function($){
+    $('.my-form .add-box').click(function(){
+        var n = $('.text-box').length + 1;
+        var box_html = $('<p class="text-box"><label for="box' + n + '">Query <span class="box-number">' + n + '</span></label> <textarea class="form-control abc" type="text" name="boxes[]"  id="box'+n+'">' + n + '</textarea> <a href="#" class="remove-box">Remove</a></p>');
+        box_html.hide();                                                                                                                            
+        $('.my-form p.text-box:last').after(box_html);
+        box_html.fadeIn('slow');
+        return false;
+    });
+    $('.my-form').on('click', '.remove-box', function(){
+    $(this).parent().css( 'background-color', '#FF6C6C' );
+    $(this).parent().fadeOut("slow", function() {
+        $(this).remove();
+        $('.box-number').each(function(index){
+            $(this).text( index + 1 );
+        });
+    });
+    return false;
+});
+});
+</script>
+
+<script type="text/javascript">
+jQuery(document).ready(function($){
+    $('.my-formm .add-boxx').click(function(){
+        var n = $('.text-boxx').length + 1;
+        var box_html = $('<p class="text-boxx"><label for="boxx' + n + '">Query <span class="box-numberr">' + n + '</span></label> <textarea class="form-control abcd" type="text" name="boxess[]"  id="boxx'+n+'">' + n + '</textarea> <a href="#" class="remove-box">Remove</a></p>');
+        box_html.hide();                                                                                                                            
+        $('.my-formm p.text-boxx:last').after(box_html);
+        box_html.fadeIn('slow');
+        return false;
+    });
+    $('.my-formm').on('click', '.remove-box', function(){
+    $(this).parent().css( 'background-color', '#FF6C6C' );
+    $(this).parent().fadeOut("slow", function() {
+        $(this).remove();
+        $('.box-numberr').each(function(index){
+            $(this).text( index + 1 );
+        });
+    });
+    return false;
+});
+});
+</script>
+<script type="text/javascript">
+function Confirm(form){
+alert("Record insert successfully!"); 
+form.submit();
+}
+</script>
 	<style type="text/css">		
 		
 		.my_background {
@@ -95,6 +171,7 @@
 	</style>	
 </head>
 <body>
+    
     <nav class="navbar navbar-inverse navbar-fixed-top">
 	  <div class="container-fluid">
 		<div class="navbar-header">
@@ -131,14 +208,14 @@
 				</div>
 			</center>
 			
-            <ul class="sidebar-nav" style='overflow:hidden;overflow-y:auto'>
+            <ul class="sidebar-nav" style='overflow:scroll;overflow-y:scroll'>
 				<br/>
 				<li class="sidebar-brand">
 				</li>
 				<li class="sidebar-brand">
 				</li>
 				<li class="sidebar-brand">
-					<div style="color:#f7f7f7;background-color:#5061DC;width:100%; 
+					<div style="color:#f7f7f7;background-color:#337ab7;width:100%; 
 						padding-left:5px;padding-right:5px;" id="user_detail_section">
 						<script type="text/javascript">
 							$(document).ready(function(){
@@ -183,6 +260,9 @@
 				
 				<li><a href="#" data-toggle="modal" data-target="#associate_tabs_to_role">
 					Associate Tabs to Role</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#hisconnect" onclick='refresh_all_entries();return false;'>HIS Connectivity</a></li> 
+                <li><a href="#" data-toggle="modal" data-target="#showhis" onclick='refresh_all_entries();return false;'>Show HIS Connectivity</a></li> 
+
 				<li><a></a></li>
 				<li><a></a></li>
             </ul>
@@ -642,13 +722,13 @@
 						<div class="form-group">
 							<label class="col-sm-4  control-label">Organisation:</label>
 							<div class="col-sm-8">
-								<select class="form-control" id="choose_org_tabstrip">
+								<select class="form-control" id="choose_org_tabstrips">
 									<script type="text/JavaScript">
 										$(document).ready(function(){
-											viewOrgListWithOUsRoles("choose_org_tabstrip","tabstrip_ou_selector",
+											viewOrgListWithOUsRoles("choose_org_tabstrips","tabstrip_ou_selector",
 											"tabstrip_role_selector","createTabstripResponse");
-											$("#choose_org_tabstrip").change(function(){
-												getOUandRole("choose_org_tabstrip","tabstrip_ou_selector",
+											$("#choose_org_tabstrips").change(function(){
+												getOUandRole("choose_org_tabstrips","tabstrip_ou_selectors",
 												"tabstrip_role_selector","createTabstripResponse");
 											});
 										});
@@ -657,13 +737,13 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class='col-sm-4  control-label' for='tabstrip_ou_selector'>Select an OU:</label>
+							<label class='col-sm-4  control-label' for='tabstrip_ou_selectors'>Select an OU:</label>
 							<div class='col-sm-8'>
-								<select id='tabstrip_ou_selector' class='form-control'>
+								<select id='tabstrip_ou_selectors' class='form-control'>
 									<script type="text/JavaScript">
 										$(document).ready(function(){
-											$("#tabstrip_ou_selector").change(function(){
-												var orgunit=($("#tabstrip_ou_selector").val()).trim();
+											$("#tabstrip_ou_selectors").change(function(){
+												var orgunit=($("#tabstrip_ou_selectors").val()).trim();
 												getRoles("tabstrip_role_selector",orgunit,"createTabstripResponse");
 											});
 										});
@@ -1107,6 +1187,209 @@
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="hisconnect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="glyphicon glyphicon-remove"></span></button>
+				<h4 class="modal-title" id="myModalLabel">HIS Connectivity</h4>
+			</div>
+			<div class="modal-body">
+                            <form class="form-horizontal" action="" method="post">
+					
+					<div id="role_lists">
+                                            
+						
+					</div>
+						<div class="panel panel-default">
+							<div class="panel-body">
+                                <div class="form-group">
+									<label class="col-sm-4  control-label">Organization</label>
+									<div class="col-sm-8">
+										<select class="form-control" name="or" id="choose_org_for_hisconnectivity" >
+										<script type="text/JavaScript">
+											$(document).ready(function(){
+												viewOrgs("dropdown","choose_org_for_hisconnectivity","all");
+                                                                                          
+											});
+										</script>
+										</select>
+									</div>
+                                </div>
+                                                           
+								<div class="form-group">
+									<label for="ipadd" class="col-sm-4  control-label">Database Server IP address</label>
+									<div class="col-sm-8">
+                                        <input type="text" class="form-control" name="ipadd" id="ipadd" placeholder="Database Server IP address">
+									</div>
+								</div>
+                                                            
+                                                                <div class="form-group">
+									<label for="ipadd" class="col-sm-4  control-label">Database Server Port address</label>
+									<div class="col-sm-8">
+                                        <input type="text" class="form-control" name="portadd" id="portadd" placeholder="Database Server Port address">
+									</div>
+								</div>
+                                                            
+                                                                <div class="form-group">
+									<label for="datusr" class="col-sm-4  control-label">Database Username</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control"  name="datusr" id="datusr" placeholder="Database Username">
+									</div>
+								</div>
+							
+								<div class="form-group">
+									<label for="datpass" class="col-sm-4  control-label">Database Password</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control"  name="datpass" id="datpass" placeholder="Database Password">
+									</div>
+								</div>
+								
+                                                                <div class="form-group">
+                                                                        <label for="message-text" class="col-sm-4 control-label" id="">Queries</label>
+                                                                       
+                                                                        <div class="col-sm-8">
+                                                                                <div class="my-form">
+    
+                                                                                    <p class="text-box">
+                                                                                    <label for="box1">Query <span class="box-number">1</span></label>
+                                                                                   
+                                                                                    <textarea class="form-control abc"  value="" name="boxes[]" id="box1"></textarea>
+                                                                                    <button class="add-box" href="#">Add More</a></button>
+                                                                                    </p>
+                                                                                    
+    
+                                                                                </div>
+                                                                            
+                                                                        </div>
+                                                                        
+                                                                </div>
+                                                            
+                                                            
+                                                        </div>
+								
+                                                                
+							<div class="panel-footer clearfix">
+								<div class="pull-left">
+                                                                    <button type="button" class="btn btn-info" id="test_connection">test connection</button>
+                                                                  
+                                                                   
+								</div>
+                                                                <div class="pull-right">   
+                                                                    <button type="submit" class="btn btn-info" id="save_data">create</button>
+								</div> 
+								<br/>
+								<center><div id="his_connectivity_resp" class="col-sm-offset-2 col-sm-8"></div></center>
+							</div>
+						</div>
+					<!--</div>-->
+				</form>
+			</div>	
+		</div>
+	</div>
+</div>
+         
+
+<div class="modal fade" id="showhis" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="glyphicon glyphicon-remove"></span></button>
+				<h4 class="modal-title" id="myModalLabel">HIS Connectivity</h4>
+			</div>
+			<div class="modal-body">
+                            <form class="form-horizontal" action="" method="post">
+					
+					<div id="role_lists">
+                                            
+						
+					</div>
+						<div class="panel panel-default">
+							<div class="panel-body">
+                                <div class="form-group">
+									<label class="col-sm-4  control-label">Organization</label>
+									<div class="col-sm-8">
+                                                                            <select class="form-control" value="" name="ort" onchange="data_Showw()" id="ort">
+                                                                                    <option>--select--</option>
+                                                                                  <?php echo show_org($connect); ?> 
+										</select>
+									</div>
+                                </div>
+                                                           
+								<div class="form-group">
+									<label for="ipadd" class="col-sm-4  control-label">Database Server IP address</label>
+									<div class="col-sm-8">
+                                        <input type="text" class="form-control" name="ipaddt" id="ipaddt" value="" placeholder="Database Server IP address">
+									</div>
+								</div>
+                                                            
+                                                                <div class="form-group">
+									<label for="ipadd" class="col-sm-4  control-label">Database Server Port address</label>
+									<div class="col-sm-8">
+                                        <input type="text" class="form-control" name="portaddt" id="portaddt" value=""  placeholder="Database Server Port address">
+									</div>
+								</div>
+                                                            
+                                                                <div class="form-group">
+									<label for="datusr" class="col-sm-4  control-label">Database Username</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control"  value="" name="datusrt"  id="datusrt" placeholder="Database Username">
+									</div>
+								</div>
+							
+								<div class="form-group">
+									<label for="datpasss" class="col-sm-4  control-label">Database Password</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" value="" name="datpassst" id="datpassst" placeholder="Database Password">
+									</div>
+								</div>
+								
+                                                                <div class="form-group">
+                                                                        <label for="message-textt" class="col-sm-4 control-label" id="">Queries</label>
+                                                                       
+                                                                        <div class="col-sm-8">
+                                                                                <div class="my-formm">
+    
+                                                                                    <p class="text-boxx">
+                                                                                    <label for="box2">Query <span class="box-numberr">1</span></label>
+                                                                                   
+                                                                                    <textarea class="form-control abcd"  value="" name="boxess[]" id="box2"></textarea>
+                                                                                    <button class="add-boxx" href="#">Add More</a></button>
+                                                                                    </p>
+                                                                                    
+    
+                                                                                </div>
+                                                                            
+                                                                        </div>
+                                                                        
+                                                                </div>
+                                                            
+                                                            
+                                                        </div>
+								
+                                                                
+							<div class="panel-footer clearfix">
+								<div class="pull-left">
+                                                                   
+                                                                  
+                                                                   
+								</div>
+                                                                <div class="pull-right">   
+                                                                    <button type="submit" class="btn btn-info" id="update_data">update</button>
+								</div> 
+								<br/>
+								<center><div id="his_connectivity_respp" class="col-sm-offset-2 col-sm-8"></div></center>
+							</div>
+						</div>
+					<!--</div>-->
+				</form>
+			</div>	
+		</div>
+	</div>
+</div>
+
+
+
 
 <!-- Modal for displaying Users-->
 <div class="modal fade" id="displayUsers" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -1225,3 +1508,5 @@
 </div> 
 </body>
 </html>
+
+
