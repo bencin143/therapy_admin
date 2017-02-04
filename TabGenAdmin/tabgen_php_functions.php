@@ -1120,4 +1120,24 @@ function sendFirebasedCloudMessage($fcm_token, $message) {
 	}
 	return $result;   
 }
+function listTabs($conn,$notTab){
+    try{
+    //echo "success";
+    $query="select Id,Name from Tab where Id != '$notTab'";
+    //echo $query;
+    
+    $res= $conn->query($query);
+     //echo $query;
+    //print_r("successmessage");
+    //$row = $res->fetch(PDO::FETCH_ASSOC);
+   // while($row = $res->fetch(PDO::FETCH_ASSOC)){
+     //   echo $row['Name'];
+    //}
+    
+    return $res;
+    }
+ catch (Exception $e){
+        print_r("error occured");
+ }
+}
 ?>

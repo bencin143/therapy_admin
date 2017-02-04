@@ -16,7 +16,7 @@ $id = $_POST['selected_id'];
     
             $result = mysqli_query($connect, $sql);  
             $row = mysqli_fetch_array($result); 
-           
+            
            
               echo json_encode($row);
                 

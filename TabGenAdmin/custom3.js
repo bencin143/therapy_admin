@@ -11,15 +11,15 @@ function data_Showw()
             type:'POST',
            success:function(result){
                
-  $("#ipaddt").val(result.DataBasePortAddress);
-  //alert(result.DataBasePortAddress);
+  $("#ipaddt").val(result.DataServerIPAdd);
+  //alert(result.DataServerIPAdd);
    $("#portaddt").val(result.DataBasePortAddress);
-//alert(result.DataServerIPAdd);
+//alert(result.DataBasePortAddress);
  $("#datusrt").val(result.DatabaseUsername);
 //alert(result.DatabaseUsername);
  $("#datpassst").val(result.DatabasePassword);
 //alert(result.DatabasePassword);
- 
+ $("#sernamee").val(result.ServiceName);
 //alert(result.Queries);
  $("#box2").val(result.Queries);
 

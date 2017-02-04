@@ -2,20 +2,27 @@
 include('connect_db.php');//connecting database here
 include('tabgen_php_functions.php');
 
+$emp = $_POST['emp'];
+$org = $_POST['select_org_for_rolee'];  
+$ou = $_POST['select_ou_4_rolee'];
 
-$or = $_POST['or'];  
-$ipadd = $_POST['ipadd'];
+$dept = $_POST['dept'];
+$doctor = $_POST['doctor'];
 
-$portadd = $_POST['portadd'];
-$datusr = $_POST['datusr'];
-$datpass = $_POST['datpass'];
-$sername = $_POST['sername'];
-$boxes = $_POST['boxes'];
 
-$each_val = implode(',', $boxes);
 
-if($conn){
-	$query = "SELECT COUNT(*) AS count FROM HISConnectivity WHERE OrganisationName='$or'";
+	
+	
+        
+	
+
+
+        
+        
+        
+        
+        if($conn){
+	$query = "SELECT COUNT(*) AS count FROM LocAndDoctors WHERE emp_id='$emp'";
 	
         
 	
@@ -30,10 +37,9 @@ if($conn){
 		}
 		else{
 			if($conn){
-	$time = time()*1000;
-	$id = randId(26);//creating unique id, this function is coded inside tabgen_php_functions.php file
-	$query = "insert into HISConnectivity(Id,CreateAt,UpdateAt,DeleteAt,OrganisationName,DataServerIPAdd,DataBasePortAddress,DatabaseUsername,DatabasePassword,ServiceName,Queries)
-	values('$id','$time','$time',0,'$or','$ipadd','$portadd','$datusr','$datpass','$sername','$each_val')";
+	
+	$query = "insert into LocAndDoctors(emp_id,LocId,Location,CenterId,CenterName,Dept_name,DoctorName)
+	values('$emp','$org','$org','$ou','$ou','$dept','$doctor')";
         
         $result = $conn->query($query);
        

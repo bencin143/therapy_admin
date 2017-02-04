@@ -25,8 +25,9 @@
 							unset($_COOKIE['user_details']);
 							unset($_COOKIE['login_header_response']);
 						}
-						//header('Location:http://'.IP.'/TabGenAdmin/');
-						echo "<center>You have successfully logout.</center>";
+					
+                                                header('Location:http://139.162.61.60/TabGenAdmin/index.php?status=loggedout');
+						//echo "<center>You have successfully logout.</center>";
 					}
 					else{
 						$fcm_token = $_POST['fcm_token'];

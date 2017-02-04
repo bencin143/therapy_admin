@@ -17,10 +17,12 @@ else{
 				if(!empty($_POST['article_id'])){
 //					$file_id = $_POST['Id'];
 					$article_id = $_POST['article_id'];
+                                        print_r($article_id);
+                                        die();
 					$file_name = get_filename($conn,$file_id);
 					if($article_id!=null){
 						if(delete_a_file($file_name)){
-							$query = "delete from News where Id='$article_id'";
+							$query = "select from News where Id='$article_id'";
 //                                                        print_r($query);
 //                                                        dies();
 							if($conn->query($query)){

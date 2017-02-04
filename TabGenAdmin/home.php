@@ -34,10 +34,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="js/jquery.min.js"></script>
         <script src="limo.js"></script>
-        <script src="custom1.js"></script>
-        <script src="custom3.js"></script>
-        <script src="custom4.js"></script>
-  
+        <script src="save1.js"></script>
+        <script src="view3.js"></script>
+        <script src="update4.js"></script>
+        <script src="custom8.js"></script>
+        <script src="create_doctor.js"></script>
+        <script src="checkt9.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/npm.js"></script>
 	<!-- This is what you need for sweet alert -->
@@ -191,7 +193,7 @@ form.submit();
 		  <ul class="nav navbar-nav navbar-right">
 			<li>
 				<a href="#" data-toggle="modal" data-target="#logoutConfirmation" >
-					  <span class="glyphicon glyphicon-log-out"></span>&nbsp;logout</a>
+					  <span class="glyphicon glyphicon-log-out"></span>&nbsp;Logout</a>
 			</li>
 		  </ul>
 		</div>
@@ -240,11 +242,11 @@ form.submit();
 					<a href="#" data-toggle="modal" data-target="#create_tab_modal"
 						onclick='refresh_all_entries();
 								getOUandRole("choose_org","ou_selector","role_selector","createTabResponse");'>
-						Create a tab</a>
+						Create a Tab</a>
 				</li>
 					
 				<li>
-					<a href="#" data-toggle="modal" data-target="#display_tab_layout">Show tabs</a>
+					<a href="#" data-toggle="modal" data-target="#display_tab_layout">Show Tabs</a>
 				</li>
 				<li>
 					<a href="#" data-toggle="modal" data-target="#create_tabstrip_modal"
@@ -253,15 +255,16 @@ form.submit();
 				<li><a href="#" data-toggle="modal" data-target="#addTabsToTabstrips">Add Tabs to Tabstrip</a></li>
 				<li><a href="#" data-toggle="modal" data-target="#createuser" 
 								onclick='getRoles("UserRole",$("#OrgUnitList").val(),"error4");refresh_all_entries();return false;'>
-									Create a user</a>
+									Create a User</a>
 				</li>
 								
-				<li><a href="#" data-toggle="modal" data-target="#displayUsers">Show users</a></li>
+				<li><a href="#" data-toggle="modal" data-target="#displayUsers">Show Users</a></li>
 				
 				<li><a href="#" data-toggle="modal" data-target="#associate_tabs_to_role">
 					Associate Tabs to Role</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#hisconnect" onclick='refresh_all_entries();return false;'>HIS Connectivity</a></li> 
                 <li><a href="#" data-toggle="modal" data-target="#showhis" onclick='refresh_all_entries();return false;'>Show HIS Connectivity</a></li> 
+                <li><a href="#" data-toggle="modal" data-target="#Add_Doctors" onclick='refresh_all_entries();return false;'>Add Doctors</a></li> 
 
 				<li><a></a></li>
 				<li><a></a></li>
@@ -330,7 +333,7 @@ form.submit();
 							<div class="form-group">
 								<label for="orgname" class="col-sm-4  control-label">Organization Name</label>
 								<div class="col-sm-8">
-									<input type="text" class="form-control" value="" name="orgname" id="orgname" placeholder="Organization name">
+									<input type="text" class="form-control" value="" name="orgname" id="orgname" placeholder="Organization Name">
 								</div>
 							</div>
 						</div>
@@ -359,7 +362,7 @@ form.submit();
 							<div class="form-group">
 								<label for="orgunit" class="col-sm-6  control-label">Organization Unit Name</label>
 								<div class="col-sm-6">
-									<input type="text" class="form-control" value="" id="orgunit" name="orgunit" placeholder="Organization name" required>
+									<input type="text" class="form-control" value="" id="orgunit" name="orgunit" placeholder="Organization Name" required>
 								</div>
 							</div>
 							<div class="form-group">
@@ -413,7 +416,7 @@ form.submit();
 								<div class="form-group">
 									<label for="rolaname" class="col-sm-4  control-label">Role Name</label>
 									<div class="col-sm-8">
-										<input type="text" class="form-control" name="rolaname" id="rolaname" placeholder="Role name">
+										<input type="text" class="form-control" name="rolaname" id="rolaname" placeholder="Role Name">
 									</div>
 								</div>
 							
@@ -488,7 +491,7 @@ form.submit();
 							<div class="form-group">
 								<label for="displayname" class="col-sm-4  control-label">Full Name</label>
 								<div class="col-sm-8">
-									<input type="text" class="form-control"  placeholder="Full name" id="user_displayname">
+									<input type="text" class="form-control"  placeholder="Full Name" id="user_displayname">
 								</div>
 							</div>
 							<div class="form-group">
@@ -578,7 +581,7 @@ form.submit();
 							<div class="form-group">
 								<label for="templateName" class="col-sm-4  control-label">Template Name</label>
 								<div class="col-sm-8">
-									<input type="text" class="form-control"  placeholder="Name of template" id="templateName">
+									<input type="text" class="form-control"  placeholder="Name of Template" id="templateName">
 								</div>
 							</div>
 							<div class="form-group">
@@ -614,7 +617,7 @@ form.submit();
 						<div class="form-group">
 							<label class="col-sm-4  control-label">Tab Name:</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control" id="tab_name"/>
+								<input type="text" class="form-control" id="tab_name" placeholder="Tab Name"/>
 							</div>
 						</div>
 						<div class="form-group">
@@ -1187,6 +1190,100 @@ form.submit();
 		</div>
 	</div>
 </div>
+
+<!-- Modal for create doctor role -->
+<div class="modal fade" id="Add_Doctors" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="glyphicon glyphicon-remove"></span></button>
+				<h4 class="modal-title" id="myModalLabel">Create Role</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" method="post">
+					
+					<div id="role_lists">
+						
+					</div>
+						<div class="panel panel-default">
+							<div class="panel-body">
+								
+							<div class="form-group">
+									<label class="col-sm-4  control-label">emp id</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" name="emp" id="emp" placeholder="emp_id">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-sm-4  control-label">Organisation:</label>
+									<div class="col-sm-8">
+                                                                            <select class="form-control" id="select_org_for_rolee" name="select_org_for_rolee">
+											<script type="text/javaScript">
+												$(document).ready(function(){
+													//viewOrgs("dropdown","select_org_for_rolee","all");
+													viewOrgListWithOUs("select_org_for_rolee","select_ou_4_rolee","error33");
+													$("#select_org_for_rolee").change(function(){
+														var org = $("#select_org_for_rolee").val();
+														get_list_of_OUs(org,"select_ou_4_rolee","error33");
+													});
+												});
+											</script>
+										</select>
+									</div>
+								</div>
+                                                           
+								
+								<div class="form-group" id="ou_section_for_creating_role">
+									<label class='col-sm-4 control-label'>Center</label>
+									<div class='col-sm-8'>
+                                                                            <select class='form-control' id='select_ou_4_rolee' name='select_ou_4_rolee'></select>
+									</div>
+								</div>
+                                                            <div class="form-group">
+									<label class="col-sm-4  control-label">Dept Name</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" name="dept" id="dept" placeholder="Dept Name">
+									</div>
+								</div>
+                                                            <div class="form-group">
+									<label class="col-sm-4  control-label">Doctor Name</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" name="doctor" id="doctor" placeholder="Doctor Name">
+									</div>
+								</div>
+							</div>
+							<div class="panel-footer clearfix">
+								<div id="error33" class="col-sm-offset-2 col-sm-8"></div>
+								<div class="pull-right">
+									<button type="submit" class="btn btn-info" id="create_doctor">Create</button>
+								</div>
+                                                                <br/>
+								<center><div id="create_doctor_resp" class="col-sm-offset-2 col-sm-8"></div></center>
+                                                                
+							</div>
+<!--                                                    <hr><h3 style="text-align:center">or</h3>
+                                                   
+                                                    <div class="panel-footer clearfix">
+								
+								<div class="pull-left">
+                                                                    <h2>Import excel file</h2> <input type="file" hidden>
+									<button type="" class="btn btn-info" id="">Create</button>
+								</div>
+                                                                <br/>
+								
+                                                                
+							</div>-->
+						</div>
+					<!--</div>-->
+				</form>
+			</div>	
+		</div>
+	</div>
+</div>
+
+
+
 <div class="modal fade" id="hisconnect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -1218,16 +1315,16 @@ form.submit();
                                 </div>
                                                            
 								<div class="form-group">
-									<label for="ipadd" class="col-sm-4  control-label">Database Server IP address</label>
+									<label for="ipadd" class="col-sm-4  control-label">Database Server IP Address</label>
 									<div class="col-sm-8">
-                                        <input type="text" class="form-control" name="ipadd" id="ipadd" placeholder="Database Server IP address">
+                                        <input type="text" class="form-control" name="ipadd" id="ipadd" placeholder="Database Server IP Address">
 									</div>
 								</div>
                                                             
                                                                 <div class="form-group">
-									<label for="ipadd" class="col-sm-4  control-label">Database Server Port address</label>
+									<label for="ipadd" class="col-sm-4  control-label">Database Server Port Address</label>
 									<div class="col-sm-8">
-                                        <input type="text" class="form-control" name="portadd" id="portadd" placeholder="Database Server Port address">
+                                        <input type="text" class="form-control" name="portadd" id="portadd" placeholder="Database Server Port Address">
 									</div>
 								</div>
                                                             
@@ -1244,6 +1341,14 @@ form.submit();
 										<input type="text" class="form-control"  name="datpass" id="datpass" placeholder="Database Password">
 									</div>
 								</div>
+                                                            
+                                                                 <div class="form-group">
+									<label for="datpasss" class="col-sm-4  control-label">Service Name</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" name="sername" id="sername" placeholder="Service Name">
+									</div>
+								</div>
+                                                                
 								
                                                                 <div class="form-group">
                                                                         <label for="message-text" class="col-sm-4 control-label" id="">Queries</label>
@@ -1271,12 +1376,12 @@ form.submit();
                                                                 
 							<div class="panel-footer clearfix">
 								<div class="pull-left">
-                                                                    <button type="button" class="btn btn-info" id="test_connection">test connection</button>
+                                                             
                                                                   
                                                                    
 								</div>
                                                                 <div class="pull-right">   
-                                                                    <button type="submit" class="btn btn-info" id="save_data">create</button>
+                                                                    <button type="submit" class="btn btn-info" id="save_data">Create</button>
 								</div> 
 								<br/>
 								<center><div id="his_connectivity_resp" class="col-sm-offset-2 col-sm-8"></div></center>
@@ -1317,16 +1422,16 @@ form.submit();
                                 </div>
                                                            
 								<div class="form-group">
-									<label for="ipadd" class="col-sm-4  control-label">Database Server IP address</label>
+									<label for="ipadd" class="col-sm-4  control-label">Database Server IP Address</label>
 									<div class="col-sm-8">
-                                        <input type="text" class="form-control" name="ipaddt" id="ipaddt" value="" placeholder="Database Server IP address">
+                                        <input type="text" class="form-control" name="ipaddt" id="ipaddt" value="" placeholder="Database Server IP Address">
 									</div>
 								</div>
                                                             
                                                                 <div class="form-group">
-									<label for="ipadd" class="col-sm-4  control-label">Database Server Port address</label>
+									<label for="ipadd" class="col-sm-4  control-label">Database Server Port Address</label>
 									<div class="col-sm-8">
-                                        <input type="text" class="form-control" name="portaddt" id="portaddt" value=""  placeholder="Database Server Port address">
+                                        <input type="text" class="form-control" name="portaddt" id="portaddt" value=""  placeholder="Database Server Port Address">
 									</div>
 								</div>
                                                             
@@ -1341,6 +1446,13 @@ form.submit();
 									<label for="datpasss" class="col-sm-4  control-label">Database Password</label>
 									<div class="col-sm-8">
 										<input type="text" class="form-control" value="" name="datpassst" id="datpassst" placeholder="Database Password">
+									</div>
+								</div>
+                                                            
+                                                                <div class="form-group">
+									<label for="sername" class="col-sm-4  control-label">Service Name</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" value="" name="sernamee" id="sernamee" placeholder="Service Name">
 									</div>
 								</div>
 								
@@ -1371,11 +1483,12 @@ form.submit();
 							<div class="panel-footer clearfix">
 								<div class="pull-left">
                                                                    
-                                                                  
+                                                                  <button type="button" class="btn btn-info" id="database_connection">Test Mysql DB Connection</button>
+                                                                    <button type="button" class="btn btn-info" id="oracle_connection">Test Oracle DB Connection</button>
                                                                    
 								</div>
                                                                 <div class="pull-right">   
-                                                                    <button type="submit" class="btn btn-info" id="update_data">update</button>
+                                                                    <button type="submit" class="btn btn-info" id="update_data">Update</button>
 								</div> 
 								<br/>
 								<center><div id="his_connectivity_respp" class="col-sm-offset-2 col-sm-8"></div></center>

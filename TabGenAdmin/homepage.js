@@ -391,7 +391,7 @@ $(document).ready(function (){
 				document.getElementById("error4").style.color="red";
 				return false;
 			}
-			else if(password.length<8){
+			else if(password.length<4){
 				document.getElementById("error4").innerHTML="Password is too short, make it at least 8 characters long.";
 				document.getElementById("error4").style.color="red";
 				return false;
@@ -2146,6 +2146,9 @@ function isValidateEmail(email) {
   return re.test(email);
 }
 
+
+
+   
 
 
 	
